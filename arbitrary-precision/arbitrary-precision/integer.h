@@ -15,7 +15,9 @@ class Integer {
 
 private:
 	NodoDoble<Array>** integer;
+	void add_digits(int);
 public:
+	Integer();
 	Integer(int);
 	Integer(long);
 	NodoDoble<Array>** getInteger() const;

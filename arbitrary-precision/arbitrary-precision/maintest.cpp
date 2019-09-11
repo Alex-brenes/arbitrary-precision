@@ -2,9 +2,12 @@
 #include "integer.h"
 
 int main() {
-	Integer* a = new Integer(119832123);
-	std::cout << *a;
-	delete a;
-	std::cin.get();
+
+
+	Integer* b = new Integer();
+	*b = Integer::parse("112233445566778899001122334");
+	std::cout << *b;
+
+	delete b;
 	return 0;
 }
