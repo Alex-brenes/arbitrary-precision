@@ -16,12 +16,20 @@ class Integer {
 private:
 	NodoDoble<Array>** integer;
 	void add_digits(int);
+	int cantidadDigitos() const;
 public:
 	Integer();
 	Integer(int);
 	Integer(long);
 	NodoDoble<Array>** getInteger() const;
 	static Integer& parse(std::string);
+	Integer& operator=(const Integer&);
+	Integer& operator+(const Integer&);
+	Integer& operator-(const Integer&);
+	Integer& operator*(const Integer&);
+	Integer& operator/(const Integer&);
+	bool operator<(const Integer&);
+	bool operator>(const Integer&);
 	~Integer();
 };
 

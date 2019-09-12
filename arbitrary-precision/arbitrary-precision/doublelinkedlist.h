@@ -47,6 +47,18 @@ void prepend(T* new_data, NodoDoble<T>**& head) {
 }
 
 template<typename T>
+NodoDoble<T>* last(NodoDoble<T>**head) {
+	NodoDoble<T>* aux = nullptr;
+	if (!empty(head)) {
+		aux = *head;
+		while (aux->get_next() != nullptr) {
+			aux = aux->get_next();
+		}
+	}
+	return aux;
+}
+
+template<typename T>
 size_t find_pos(NodoDoble<T>** head, T& element) {
 	NodoDoble<T>* aux = *head;
 	int pos = 0;
@@ -114,6 +126,7 @@ void clear(NodoDoble<T>** head) {
 		NodoDoble<T>* aux;
 		while (!empty(head)) {
 			aux = (*head)->get_next();
+			delete (*head)->get_data();
 			delete (*head);
 			*head = aux;
 		}
@@ -131,7 +144,18 @@ T* sacar_primero(NodoDoble<T>** head) {
 	*head = aux;
 	return temp;
 }
-
+template <typename T>
+int elements(NodoDoble<T>** head) {
+	int counter = 0;
+	if (!empty(head)) {
+		NodoDoble<T>* aux = *head;
+		while (aux != nullptr) {
+			counter++;
+			aux = aux->get_next();
+		}
+	}
+	return counter;
+}
 template <typename T>
 void showListReverse(NodoDoble<T>** head) {
 	if (!empty(head)) {

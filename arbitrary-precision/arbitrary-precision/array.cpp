@@ -18,8 +18,10 @@ Array::Array(const Array& _arr)
 	for (int i = 0; i < capacity; i++) {
 		this->_arr[i] = nullptr;
 	}
-	for (int i = 0; i < _arr.size; i++) {
-		this->_arr[i] = new int(*_arr[i]);
+	for (int i = _arr.capacity - 1; i > _arr.size; i--) {
+		if (_arr[i]) {
+			this->_arr[i] = new int(*_arr[i]);
+		}
 	}
 }
 
@@ -57,7 +59,7 @@ bool Array::agregar(int* val)
 			_arr[size--] = val;
 		}
 		else if (std::to_string(*_arr[size + 1]).length() < 9) {
-			std::cout << std::to_string(*val).substr(std::to_string(*val).length()- (9 - std::to_string(*_arr[size + 1]).length()), 9 - std::to_string(*_arr[size + 1]).length()) + std::to_string(*_arr[size + 1]);
+			
 			_arr[size + 1] = new int(atoi((std::to_string(*val) + std::to_string(*_arr[size + 1])).c_str()));
 		}
 		else {
