@@ -5,7 +5,7 @@
 #define INTEGER_H
 #include <string>
 
-#include "doublelinkedlist.h"
+#include "listasimple.h"
 #include "array.h"
 
 #define ZERO 0
@@ -14,14 +14,14 @@
 class Integer {
 
 private:
-	NodoDoble<Array>** integer;
+	NodoSimple<Array>** integer;
 	void add_digits(int);
 	int cantidadDigitos() const;
 public:
 	Integer();
 	Integer(int);
 	Integer(long);
-	NodoDoble<Array>** getInteger() const;
+	NodoSimple<Array>** getInteger() const;
 	static Integer& parse(std::string);
 	Integer& operator=(const Integer&);
 	Integer& operator+(const Integer&);

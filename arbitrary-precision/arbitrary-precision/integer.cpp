@@ -7,7 +7,7 @@ void Integer::add_digits(int digit) {
 		//New array
 		Array* new_arr = new Array;
 		new_arr->agregar(new int(digit));
-		prepend(new_arr, this->integer);
+		append(new_arr, this->integer);
 	}
 	else {
 		arr->agregar(new int(digit));
@@ -40,7 +40,7 @@ Integer::Integer(long n) {
 	prepend(arr, this->integer);
 }
 
-NodoDoble<Array>** Integer::getInteger() const {
+NodoSimple<Array>** Integer::getInteger() const {
 	return this->integer;
 }
 
@@ -89,7 +89,7 @@ Integer& Integer::operator=(const Integer& integer_b)
 		delete integer;
 
 
-		NodoDoble<Array>* auxiliar = *integer_b.getInteger();
+		NodoSimple<Array>* auxiliar = *integer_b.getInteger();
 		integer = nullptr;
 
 		while (auxiliar != nullptr) {
@@ -139,8 +139,8 @@ bool Integer::operator>(const Integer& integer_b) {
 			uno de los dos dígitos sea mayor al otro.
 			*/
 
-		NodoDoble <Array>* auxiliar_a = *this->integer;
-		NodoDoble <Array>* auxiliar_b = *integer_b.integer;
+		NodoSimple <Array>* auxiliar_a = *this->integer;
+		NodoSimple <Array>* auxiliar_b = *integer_b.integer;
 
 		Array* auxiliar_arr_a;
 		Array* auxiliar_arr_b;
@@ -194,8 +194,8 @@ bool Integer::operator<(const Integer& integer_b)
 				uno de los dos dígitos sea mayor al otro.
 				*/
 
-			NodoDoble <Array>* auxiliar_a = *this->integer;
-			NodoDoble <Array>* auxiliar_b = *integer_b.integer;
+			NodoSimple <Array>* auxiliar_a = *this->integer;
+			NodoSimple <Array>* auxiliar_b = *integer_b.integer;
 
 			Array* auxiliar_arr_a;
 			Array* auxiliar_arr_b;
@@ -235,10 +235,10 @@ Integer::~Integer() {
 }
 
 std::ostream& operator<<(std::ostream& output, const Integer& integer) {
-	NodoDoble<Array>* aux = last(integer.getInteger());
+	NodoSimple<Array>* aux = *integer.getInteger();
 	while (aux != nullptr) {
 		output << *(aux->get_data());
-		aux = aux->get_previous();
+		aux = aux->get_next();
 	}
 	return output;
 }
