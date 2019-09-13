@@ -30,6 +30,9 @@ public:
 	Integer& operator/(const Integer&);
 	bool operator<(const Integer&);
 	bool operator>(const Integer&);
+	bool operator<=(const Integer&);
+	bool operator>=(const Integer&);
+	bool operator==(const Integer&);
 	~Integer();
 };
 

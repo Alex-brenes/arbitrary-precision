@@ -44,7 +44,7 @@ int Array::countDigits(int index)
 {
 	int counter = 1;
 	int auxiliar = *(*this)[index];
-	while (auxiliar > 10) {
+	while (auxiliar >= 10) {
 		auxiliar /= 10;
 		counter++;
 	}

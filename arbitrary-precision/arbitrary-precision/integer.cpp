@@ -110,10 +110,32 @@ Integer& Integer::operator=(const Integer& integer_b)
 
 Integer& Integer::operator+(const Integer& integer_b)
 {
+	
+	int size_a = elements(this->integer);
+	int size_b = elements(integer_b.getInteger());
 
+	try {
+		if (size_a == 0 || size_b == 0) {
+			throw 0;
+		}
 
+		//New Integer
+		Array* addition_arry = nullptr;
+		Integer* integer_addition = new Integer;
+		NodoSimple<Array>** head = integer_addition->integer;
+		
+		//this
+		NodoSimple<Array>* list_integer_a = *this->integer;
+		
+		//integer_b
+		NodoSimple<Array>* list_integer_b = *integer_b.integer;
 
-	return *this;
+		
+
+	}
+	catch (int) {
+		// At least one of the Integer is empty
+	}
 
 }
 bool Integer::operator>(const Integer& integer_b) {
@@ -121,51 +143,124 @@ bool Integer::operator>(const Integer& integer_b) {
 	int size_a = elements(this->integer);
 	int size_b = elements(integer_b.getInteger());
 
-	if (size_a > size_b) {
-		return true;
-	}
-	else if (size_a < size_b) {
-		return false;
-	}
-	else if (this->cantidadDigitos() > integer_b.cantidadDigitos()) {
-		return true;
-	}
-	else {
+	try {
+		if (size_a == 0 || size_b == 0) {
+			throw 0;
+		}
+		if (size_a > size_b) {
+			return true;
+		}
+		else if (size_a < size_b) {
+			return false;
+		}
+		else if (this->cantidadDigitos() > integer_b.cantidadDigitos()) {
+			return true;
+		}
+		else {
 
 
-		//Misma cantidad de nodos y dígitos
-			/*
-			Se revisa desde el primer nodo y se detiene en el momento en el que
-			uno de los dos dígitos sea mayor al otro.
-			*/
+			//Misma cantidad de nodos y dígitos
+				/*
+				Se revisa desde el primer nodo y se detiene en el momento en el que
+				uno de los dos dígitos sea mayor al otro.
+				*/
 
-		NodoSimple <Array>* auxiliar_a = *this->integer;
-		NodoSimple <Array>* auxiliar_b = *integer_b.integer;
+			NodoSimple <Array>* auxiliar_a = *this->integer;
+			NodoSimple <Array>* auxiliar_b = *integer_b.integer;
 
-		Array* auxiliar_arr_a;
-		Array* auxiliar_arr_b;
+			Array* auxiliar_arr_a;
+			Array* auxiliar_arr_b;
 
-		while (auxiliar_a != nullptr && auxiliar_b != nullptr) {
-			auxiliar_arr_a = auxiliar_a->get_data();
-			auxiliar_arr_b = auxiliar_b->get_data();
-			int b = auxiliar_arr_b->getCapacity() - auxiliar_arr_b->getQuantity();
 
-			for (int i = auxiliar_arr_a->getCapacity() - auxiliar_arr_a->getQuantity();
-				i < auxiliar_arr_a->getCapacity() && b < auxiliar_arr_b->getCapacity(); i++) {
-				int a = *(*auxiliar_arr_a)[i];
-				int j = *(*auxiliar_arr_b)[b];
-				if (*(*auxiliar_arr_a)[i] > * (*auxiliar_arr_b)[b]) {
-					return true;
+			while (auxiliar_a != nullptr && auxiliar_b != nullptr) {
+				auxiliar_arr_a = auxiliar_a->get_data();
+				auxiliar_arr_b = auxiliar_b->get_data();
+				int b = auxiliar_arr_b->getCapacity() - auxiliar_arr_b->getQuantity();
+
+				for (int i = auxiliar_arr_a->getCapacity() - auxiliar_arr_a->getQuantity();
+					i < auxiliar_arr_a->getCapacity() && b < auxiliar_arr_b->getCapacity(); i++) {
+					if (*(*auxiliar_arr_a)[i] > * (*auxiliar_arr_b)[b]) {
+						return true;
+					}
+					b++;
 				}
-				b++;
+
+				auxiliar_a = auxiliar_a->get_next();
+				auxiliar_b = auxiliar_b->get_next();
+
 			}
 
-			auxiliar_a = auxiliar_a->get_next();
-			auxiliar_b = auxiliar_b->get_next();
+			return false;
+		}
+	}
+	catch (int) {
+		// At least one of the Integer is empty
+	}
+}
+
+bool Integer::operator<=(const Integer& integer_b)
+{
+	return (*this == integer_b || *this < integer_b);
+}
+
+bool Integer::operator>=(const Integer& integer_b)
+{
+	return (*this == integer_b || *this > integer_b);
+}
+
+bool Integer::operator==(const Integer& integer_b)
+{
+
+	int size_a = elements(this->integer);
+	int size_b = elements(integer_b.getInteger());
+	try {
+		if (size_a == 0 || size_b == 0) {
+			throw 0;
+		}
+		if (size_a < size_b || size_a > size_b) {
+			return false;
+		}
+		else if (this->cantidadDigitos() > integer_b.cantidadDigitos() || this->cantidadDigitos() < integer_b.cantidadDigitos()) {
+			return false;
+		}
+		else {
+
+			//Misma cantidad de nodos y dígitos
+				/*
+				Se revisa desde el primer nodo y se detiene en el momento en el que
+				uno de los dos dígitos sea mayor al otro.
+				*/
+
+			NodoSimple <Array>* auxiliar_a = *this->integer;
+			NodoSimple <Array>* auxiliar_b = *integer_b.integer;
+
+			Array* auxiliar_arr_a;
+			Array* auxiliar_arr_b;
+
+			while (auxiliar_a != nullptr && auxiliar_b != nullptr) {
+				auxiliar_arr_a = auxiliar_a->get_data();
+				auxiliar_arr_b = auxiliar_b->get_data();
+				int b = auxiliar_arr_b->getCapacity() - auxiliar_arr_b->getQuantity();
+
+				for (int i = auxiliar_arr_a->getCapacity() - auxiliar_arr_a->getQuantity();
+					i < auxiliar_arr_a->getCapacity() && b < auxiliar_arr_b->getCapacity(); i++) {
+					if (*(*auxiliar_arr_a)[i] < *(*auxiliar_arr_b)[b] || *(*auxiliar_arr_a)[i] > *(*auxiliar_arr_b)[b]) {
+						return false;
+					}
+					b++;
+				}
+
+				auxiliar_a = auxiliar_a->get_next();
+				auxiliar_b = auxiliar_b->get_next();
+
+			}
+
+			return true;
 
 		}
-
-		return false;
+	}
+	catch (int) {
+		//At least one of the Integer is empty
 	}
 
 }
@@ -186,9 +281,12 @@ bool Integer::operator<(const Integer& integer_b)
 		else if (size_a > size_b) {
 			return false;
 		}
+		else if (this->cantidadDigitos() > integer_b.cantidadDigitos()) {
+			return true;
+		}
 		else {
 
-			//Misma cantidad de nodos
+			//Misma cantidad de nodos y dígitos
 				/*
 				Se revisa desde el primer nodo y se detiene en el momento en el que
 				uno de los dos dígitos sea mayor al otro.
@@ -235,10 +333,18 @@ Integer::~Integer() {
 }
 
 std::ostream& operator<<(std::ostream& output, const Integer& integer) {
-	NodoSimple<Array>* aux = *integer.getInteger();
-	while (aux != nullptr) {
-		output << *(aux->get_data());
-		aux = aux->get_next();
+	try {
+		if (integer.getInteger() == nullptr) {
+			throw 0;
+		}
+		NodoSimple<Array>* aux = *integer.getInteger();
+		while (aux != nullptr) {
+			output << *(aux->get_data());
+			aux = aux->get_next();
+		}
+		return output;
 	}
-	return output;
+	catch (int) {
+		// Integer is empty
+	}
 }
