@@ -25,6 +25,10 @@ public:
 	Integer(long);
 	static Integer& parse(std::string);
 	Integer& operator=(const Integer&);
+	Integer& operator+=(const Integer&);
+	Integer& operator-=(const Integer&);
+	Integer& operator*=(const Integer&);
+	Integer& operator/=(const Integer&);
 	Integer& operator+(const Integer&);
 	Integer& operator-(const Integer&);
 	Integer& operator*(const Integer&);
@@ -34,6 +38,7 @@ public:
 	bool operator<=(const Integer&);
 	bool operator>=(const Integer&);
 	bool operator==(const Integer&);
+	bool operator!=(const Integer&);
 	~Integer();
 	friend std::ostream& operator<<(std::ostream&, const Integer&);
 };

@@ -122,7 +122,7 @@ void showList(NodoDoble<T>** head) {
 }
 template <typename T>
 void clear(NodoDoble<T>** head) {
-	if (!empty(head)) {
+	if (head) {
 		NodoDoble<T>* aux;
 		while (!empty(head)) {
 			aux = (*head)->get_next();

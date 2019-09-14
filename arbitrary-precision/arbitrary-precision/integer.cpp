@@ -7,7 +7,7 @@ void Integer::add_digits(int digit) {
 		//New array
 		Array* new_arr = new Array;
 		new_arr->agregar(new int(digit));
-		append(new_arr, this->integer);
+		prepend(new_arr, this->integer);
 	}
 	else {
 		arr->agregar(new int(digit));
@@ -33,7 +33,7 @@ Integer::Integer(const Integer& integer_b) {
 	this->integer = nullptr;
 
 	while (auxiliar != nullptr) {
-		prepend(new Array(*auxiliar->get_data()), this->integer);
+		append(new Array(*auxiliar->get_data()), this->integer);
 		auxiliar = auxiliar->get_next();
 	}
 }
@@ -102,7 +102,7 @@ Integer& Integer::operator=(const Integer& integer_b)
 		integer = nullptr;
 
 		while (auxiliar != nullptr) {
-			prepend(new Array(*auxiliar->get_data()), this->integer);
+			append(new Array(*auxiliar->get_data()), this->integer);
 			auxiliar = auxiliar->get_next();
 		}
 
@@ -113,6 +113,12 @@ Integer& Integer::operator=(const Integer& integer_b)
 	}
 	
 
+}
+
+Integer& Integer::operator+=(const Integer& integer_b)
+{
+	*this = (*this + integer_b);
+	return *this;
 }
 
 
@@ -221,6 +227,19 @@ Integer& Integer::operator+(const Integer& integer_b)
 		// At least one of the Integer is empty
 	}
 
+}
+Integer& Integer::operator*(const Integer& integer_b)
+{
+	int size_a = elements(this->integer);
+	int size_b = elements(integer_b.getInteger());
+	try {
+		if (size_a == 0 || size_b == 0) {
+			throw 0;
+		}
+	}
+	catch (int) {
+		// At least one of the Integer is empty
+	}
 }
 bool Integer::operator>(const Integer& integer_b) {
 
@@ -347,6 +366,11 @@ bool Integer::operator==(const Integer& integer_b)
 		//At least one of the Integer is empty
 	}
 
+}
+
+bool Integer::operator!=(const Integer& integer_b)
+{
+	return !(*this == integer_b);
 }
 
 
