@@ -17,7 +17,7 @@ void Integer::add_digits(int digit) {
 
 int Integer::cantidadDigitos() const {
 	Array* arr = (*this->integer)->get_data();
-	int digits = (elements(this->integer) - 1) * (9 * arr->getQuantity());
+	int digits = (elements(this->integer) - 1) * (MAX_DIGITS * arr->getQuantity());
 	int aux = 0;
 	for (int i = arr->getCapacity() - arr->getQuantity(); i < arr->getCapacity(); i++) {
 		aux += arr->countDigits(i);
@@ -27,6 +27,15 @@ int Integer::cantidadDigitos() const {
 
 Integer::Integer() {
 	this->integer = nullptr;
+}
+Integer::Integer(const Integer& integer_b) {
+	NodoDoble<Array>* auxiliar = *integer_b.getInteger();
+	this->integer = nullptr;
+
+	while (auxiliar != nullptr) {
+		prepend(new Array(*auxiliar->get_data()), this->integer);
+		auxiliar = auxiliar->get_next();
+	}
 }
 Integer::Integer(int n) {
 	Array* arr = new Array;
@@ -54,7 +63,7 @@ Integer& Integer::parse(std::string string_n)
 
 	int i = string_n.length();
 	while (i > 0) {
-		if (i < 9) {
+		if (i < MAX_DIGITS) {
 			if (parse->integer == nullptr) {
 				arr = new Array;
 				arr->agregar(new int(atoi(string_n.substr(0, i).c_str())));
@@ -67,13 +76,13 @@ Integer& Integer::parse(std::string string_n)
 		else {
 			if (parse->integer == nullptr) {
 				arr = new Array;
-				arr->agregar(new int(atoi(string_n.substr(i - 9, 9).c_str())));
+				arr->agregar(new int(atoi(string_n.substr(i - MAX_DIGITS, MAX_DIGITS).c_str())));
 				prepend(arr, parse->integer);
 			}else{
-				parse->add_digits(atoi(string_n.substr(i - 9, 9).c_str()));
+				parse->add_digits(atoi(string_n.substr(i - MAX_DIGITS, MAX_DIGITS).c_str()));
 			}
 		}
-		i -= 9;
+		i -= MAX_DIGITS;
 	}
 	return *parse;
 }
@@ -119,18 +128,24 @@ Integer& Integer::operator+(const Integer& integer_b)
 			throw 0;
 		}
 
-		//New Integer
-		Array* addition_arry = nullptr;
+		
+		// this
+		NodoDoble<Array>* list_integer_a = last(this->integer);
+		
+		// integer_b
+		NodoDoble<Array>* list_integer_b = last(integer_b.integer);
+		
+		// New Integer
+		// *this + integer_b
+		Array* addition_array = nullptr;
 		Integer* integer_addition = new Integer;
 		NodoDoble<Array>** head = integer_addition->integer;
-		
-		//this
-		NodoDoble<Array>* list_integer_a = *this->integer;
-		
-		//integer_b
-		NodoDoble<Array>* list_integer_b = *integer_b.integer;
 
+		int carry = 0;
 		
+		for (int i;;) {
+
+		}
 
 	}
 	catch (int) {

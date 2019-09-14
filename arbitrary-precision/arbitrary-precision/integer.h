@@ -7,7 +7,7 @@
 
 #include "doublelinkedlist.h"
 #include "array.h"
-
+#define MAX_DIGITS 9
 #define ZERO 0
 #define ONE 1
 
@@ -19,6 +19,7 @@ private:
 	int cantidadDigitos() const;
 public:
 	Integer();
+	Integer(const Integer&);
 	Integer(int);
 	Integer(long);
 	NodoDoble<Array>** getInteger() const;

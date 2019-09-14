@@ -1,6 +1,6 @@
 #ifndef ARRAY_H
 #define ARRAY_H
-#define MAX_TAM 3;
+#define MAX_TAM 8;
 #include <iostream>
 #include <string>
 class Array {

@@ -18,11 +18,16 @@ Array::Array(const Array& _arr)
 	for (int i = 0; i < capacity; i++) {
 		this->_arr[i] = nullptr;
 	}
-	for (int i = _arr.capacity - 1; i > _arr.size; i--) {
-		if (_arr[i]) {
-			this->_arr[i] = new int(*_arr[i]);
-		}
+	//for (int i = _arr.capacity - 1; i > _arr.size; i--) {
+	//	if (_arr[i]) {
+	//		this->_arr[i] = new int(*_arr[i]);
+	//	}
+	//}
+
+	for (int i = _arr.capacity - _arr.getQuantity(); i < _arr.capacity; i++) {
+		this->_arr[i] = new int(*_arr[i]);
 	}
+
 }
 
 int Array::getCapacity() const
