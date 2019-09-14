@@ -40,7 +40,7 @@ Integer::Integer(long n) {
 	prepend(arr, this->integer);
 }
 
-NodoSimple<Array>** Integer::getInteger() const {
+NodoDoble<Array>** Integer::getInteger() const {
 	return this->integer;
 }
 
@@ -89,7 +89,7 @@ Integer& Integer::operator=(const Integer& integer_b)
 		delete integer;
 
 
-		NodoSimple<Array>* auxiliar = *integer_b.getInteger();
+		NodoDoble<Array>* auxiliar = *integer_b.getInteger();
 		integer = nullptr;
 
 		while (auxiliar != nullptr) {
@@ -122,13 +122,13 @@ Integer& Integer::operator+(const Integer& integer_b)
 		//New Integer
 		Array* addition_arry = nullptr;
 		Integer* integer_addition = new Integer;
-		NodoSimple<Array>** head = integer_addition->integer;
+		NodoDoble<Array>** head = integer_addition->integer;
 		
 		//this
-		NodoSimple<Array>* list_integer_a = *this->integer;
+		NodoDoble<Array>* list_integer_a = *this->integer;
 		
 		//integer_b
-		NodoSimple<Array>* list_integer_b = *integer_b.integer;
+		NodoDoble<Array>* list_integer_b = *integer_b.integer;
 
 		
 
@@ -165,8 +165,8 @@ bool Integer::operator>(const Integer& integer_b) {
 				uno de los dos dígitos sea mayor al otro.
 				*/
 
-			NodoSimple <Array>* auxiliar_a = *this->integer;
-			NodoSimple <Array>* auxiliar_b = *integer_b.integer;
+			NodoDoble <Array>* auxiliar_a = *this->integer;
+			NodoDoble <Array>* auxiliar_b = *integer_b.integer;
 
 			Array* auxiliar_arr_a;
 			Array* auxiliar_arr_b;
@@ -231,8 +231,8 @@ bool Integer::operator==(const Integer& integer_b)
 				uno de los dos dígitos sea mayor al otro.
 				*/
 
-			NodoSimple <Array>* auxiliar_a = *this->integer;
-			NodoSimple <Array>* auxiliar_b = *integer_b.integer;
+			NodoDoble <Array>* auxiliar_a = *this->integer;
+			NodoDoble <Array>* auxiliar_b = *integer_b.integer;
 
 			Array* auxiliar_arr_a;
 			Array* auxiliar_arr_b;
@@ -292,8 +292,8 @@ bool Integer::operator<(const Integer& integer_b)
 				uno de los dos dígitos sea mayor al otro.
 				*/
 
-			NodoSimple <Array>* auxiliar_a = *this->integer;
-			NodoSimple <Array>* auxiliar_b = *integer_b.integer;
+			NodoDoble <Array>* auxiliar_a = *this->integer;
+			NodoDoble <Array>* auxiliar_b = *integer_b.integer;
 
 			Array* auxiliar_arr_a;
 			Array* auxiliar_arr_b;
@@ -337,9 +337,22 @@ std::ostream& operator<<(std::ostream& output, const Integer& integer) {
 		if (integer.getInteger() == nullptr) {
 			throw 0;
 		}
-		NodoSimple<Array>* aux = *integer.getInteger();
+		NodoDoble<Array>* aux = *integer.getInteger();
 		while (aux != nullptr) {
-			output << *(aux->get_data());
+			if (aux->get_previous() == nullptr) {
+				Array* auxiliar_array = aux->get_data();
+				std::string number = std::to_string(*(*auxiliar_array)[auxiliar_array->getCapacity() - auxiliar_array->getQuantity()]);
+				if (number[0] == '0') {
+					output << '-';
+					output << number.substr(1, number.length() - 2);
+				}
+				else {
+					output << *(aux->get_data());
+				}
+			}
+			else {
+				output << *(aux->get_data());
+			}
 			aux = aux->get_next();
 		}
 		return output;
