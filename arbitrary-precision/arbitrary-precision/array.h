@@ -1,6 +1,7 @@
 #ifndef ARRAY_H
 #define ARRAY_H
-#define MAX_TAM 8;
+#define MAX_TAM 8
+#define MAX_DIGITS 9
 #include <iostream>
 #include <string>
 class Array {
@@ -18,7 +19,7 @@ public:
 	int getCapacity() const;
 	int getSize() const;
 	int getQuantity() const;
-	int countDigits(int);
+	int countDigits(int) const;
 	bool agregar(int*);
 	~Array();
 	Array& operator=(const Array&);

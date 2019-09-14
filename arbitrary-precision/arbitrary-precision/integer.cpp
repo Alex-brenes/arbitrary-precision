@@ -116,7 +116,6 @@ Integer& Integer::operator=(const Integer& integer_b)
 }
 
 
-
 Integer& Integer::operator+(const Integer& integer_b)
 {
 	
@@ -171,17 +170,17 @@ Integer& Integer::operator+(const Integer& integer_b)
 			*/
 			auxiliar_array_a = list_integer_a->get_data();
 			auxiliar_array_b = list_integer_b->get_data();
-
 			array_a_max = auxiliar_array_a->getCapacity();
 			array_a_quantity = auxiliar_array_a->getQuantity();
 
 			array_b_max = auxiliar_array_b->getCapacity();
 			array_b_quantity = auxiliar_array_b->getQuantity();
 
-			for (int i = array_b_max - array_b_quantity; i < array_b_max || carry; i++) { //Si hay acarreo no puede detenerse la suma
+			for (int i = auxiliar_array_b->getCapacity() - 1; (i >= array_b_max - array_b_quantity) || carry; i--) { //Si hay acarreo no puede detenerse la suma
 				std::string auxiliar_addition;
 				if ((*auxiliar_array_a)[i] && (*auxiliar_array_b)[i]) {
 					auxiliar_addition = (std::to_string(*(*auxiliar_array_a)[i] + *(*auxiliar_array_b)[i] + carry));
+					carry = 0;
 				}
 				else {
 					integer_addition->add_digits(carry);
@@ -190,18 +189,14 @@ Integer& Integer::operator+(const Integer& integer_b)
 
 				if (auxiliar_addition.length() > MAX_DIGITS) {
 					carry = (int)auxiliar_addition[0] - '0';
-					std::cout << "\nCarry: " << carry << std::endl;
-					std::cin.get();
-
+					auxiliar_addition = auxiliar_addition.substr(1, auxiliar_addition.length() - 1);
 				}
 
 
 				if (addition_array == nullptr) {
-
 					addition_array = new Array;
 					addition_array->agregar(new int(std::stoi(auxiliar_addition)));
 					prepend(addition_array, integer_addition->integer);
-
 				}
 				else {
 
@@ -431,12 +426,24 @@ std::ostream& operator<<(std::ostream& output, const Integer& integer) {
 			if (aux->get_previous() == nullptr) {
 				Array* auxiliar_array = aux->get_data();
 				std::string number = std::to_string(*(*auxiliar_array)[auxiliar_array->getCapacity() - auxiliar_array->getQuantity()]);
-				if (number[0] == '0') {
-					output << '-';
-					output << number.substr(1, number.length() - 2);
+				//Signed number
+				if (number[0] == '0') { 
+					std::stringstream s;
+					int digits = aux->get_data()->countDigits(aux->get_data()->getCapacity() - aux->get_data()->getQuantity());
+					s << *(aux->get_data());
+					std::string str(s.str());
+					str = str.substr(MAX_DIGITS - 1, str.length());
+					str[0] = '-';
+					output << str;
 				}
 				else {
-					output << *(aux->get_data());
+					std::stringstream s;
+					int digits = aux->get_data()->countDigits(aux->get_data()->getCapacity() - aux->get_data()->getQuantity());
+					s << *(aux->get_data());
+					std::string str(s.str());
+					str = str.substr(MAX_DIGITS - digits, str.length());
+					output << str;
+					//output << *(aux->get_data());
 				}
 			}
 			else {

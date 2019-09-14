@@ -45,7 +45,7 @@ int Array::getQuantity() const
 	return capacity - (size + 1);
 }
 
-int Array::countDigits(int index)
+int Array::countDigits(int index) const
 {
 	int counter = 1;
 	int auxiliar = *(*this)[index];
@@ -63,10 +63,10 @@ bool Array::agregar(int* val)
 		if (this->getQuantity() == 0) {
 			_arr[size--] = val;
 		}
-		else if (std::to_string(*_arr[size + 1]).length() < 9) {
-			
-			_arr[size + 1] = new int(atoi((std::to_string(*val) + std::to_string(*_arr[size + 1])).c_str()));
-		}
+		//Si se quiere meter con un solo cero por celda descomentar esto
+		//else if (std::to_string(*_arr[size + 1]).length() < 9) {
+		//	_arr[size + 1] = new int(atoi((std::to_string(*val) + std::to_string(*_arr[size + 1])).c_str()));
+		//}
 		else {
 			_arr[size--] = val;
 		}
@@ -122,8 +122,17 @@ int*  Array::operator[](int i) const
 
 std::ostream& operator<<(std::ostream& output, const Array& arr)
 {
-	for (int i = 0; i < arr.getCapacity(); i++) {
+	//for (int i = 0; i < arr.getCapacity(); i++) {
+	//	if (arr[i] != nullptr) {
+	//		output << *arr[i];
+	//	}
+	//}
+	//return output;
+	for (int i = arr.getCapacity() - arr.getQuantity(); i < arr.getCapacity(); i++) {
 		if (arr[i] != nullptr) {
+			if (arr.countDigits(i) < MAX_DIGITS) {
+				output << std::string(MAX_DIGITS - arr.countDigits(i), '0');
+			}
 			output << *arr[i];
 		}
 	}

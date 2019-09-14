@@ -4,7 +4,7 @@
 #ifndef INTEGER_H
 #define INTEGER_H
 #include <string>
-
+#include <sstream>
 #include "doublelinkedlist.h"
 #include "array.h"
 #define MAX_DIGITS 9
@@ -17,12 +17,12 @@ private:
 	NodoDoble<Array>** integer;
 	void add_digits(int);
 	int cantidadDigitos() const;
+	NodoDoble<Array>** getInteger() const;
 public:
 	Integer();
 	Integer(const Integer&);
 	Integer(int);
 	Integer(long);
-	NodoDoble<Array>** getInteger() const;
 	static Integer& parse(std::string);
 	Integer& operator=(const Integer&);
 	Integer& operator+(const Integer&);
@@ -35,8 +35,8 @@ public:
 	bool operator>=(const Integer&);
 	bool operator==(const Integer&);
 	~Integer();
+	friend std::ostream& operator<<(std::ostream&, const Integer&);
 };
 
-std::ostream& operator<<(std::ostream&, const Integer&);
 
 #endif // !INTEGER_H
