@@ -128,24 +128,98 @@ Integer& Integer::operator+(const Integer& integer_b)
 			throw 0;
 		}
 
-		
-		// this
-		NodoDoble<Array>* list_integer_a = last(this->integer);
-		
-		// integer_b
-		NodoDoble<Array>* list_integer_b = last(integer_b.integer);
+		Array* auxiliar_array_a = nullptr;
+		Array* auxiliar_array_b = nullptr;
+		NodoDoble<Array>* list_integer_a = nullptr;
+		NodoDoble<Array>* list_integer_b = nullptr;
+
+		if (*this > integer_b) {
+			// this
+			list_integer_a = last(this->integer);
+
+			// integer_b
+			list_integer_b = last(integer_b.integer);
+		}
+		else {
+			// this
+			list_integer_b = last(this->integer);
+
+			// integer_b
+			list_integer_a = last(integer_b.integer);
+		}
+
+
 		
 		// New Integer
 		// *this + integer_b
 		Array* addition_array = nullptr;
-		Integer* integer_addition = new Integer;
-		NodoDoble<Array>** head = integer_addition->integer;
+		Integer* integer_addition = new Integer();
 
 		int carry = 0;
 		
-		for (int i;;) {
+		int array_a_max = 0;
+		int array_b_max = 0;
+		int array_a_quantity = 0;
+		int array_b_quantity = 0;
+		/*
+		Lists
+		*/
+		while (list_integer_a != nullptr && list_integer_b != nullptr) {
+			
+			/*
+			Arrays
+			*/
+			auxiliar_array_a = list_integer_a->get_data();
+			auxiliar_array_b = list_integer_b->get_data();
+
+			array_a_max = auxiliar_array_a->getCapacity();
+			array_a_quantity = auxiliar_array_a->getQuantity();
+
+			array_b_max = auxiliar_array_b->getCapacity();
+			array_b_quantity = auxiliar_array_b->getQuantity();
+
+			for (int i = array_b_max - array_b_quantity; i < array_b_max || carry; i++) { //Si hay acarreo no puede detenerse la suma
+				std::string auxiliar_addition;
+				if ((*auxiliar_array_a)[i] && (*auxiliar_array_b)[i]) {
+					auxiliar_addition = (std::to_string(*(*auxiliar_array_a)[i] + *(*auxiliar_array_b)[i] + carry));
+				}
+				else {
+					integer_addition->add_digits(carry);
+					return *integer_addition;
+				}
+
+				if (auxiliar_addition.length() > MAX_DIGITS) {
+					carry = (int)auxiliar_addition[0] - '0';
+					std::cout << "\nCarry: " << carry << std::endl;
+					std::cin.get();
+
+				}
+
+
+				if (addition_array == nullptr) {
+
+					addition_array = new Array;
+					addition_array->agregar(new int(std::stoi(auxiliar_addition)));
+					prepend(addition_array, integer_addition->integer);
+
+				}
+				else {
+
+					integer_addition->add_digits(std::stoi(auxiliar_addition));
+
+				}
+
+
+
+			}
+
+			list_integer_a = list_integer_a->get_previous();
+			list_integer_b = list_integer_b->get_previous();
 
 		}
+
+
+		return *integer_addition;
 
 	}
 	catch (int) {
