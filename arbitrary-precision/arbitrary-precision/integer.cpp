@@ -245,6 +245,7 @@ Integer& Integer::operator*(const Integer& integer_b)
 {
 	int size_a = elements(this->integer);
 	int size_b = elements(integer_b.getInteger());
+
 	try {
 		if (size_a == 0 || size_b == 0) {
 			throw 0;
@@ -295,39 +296,54 @@ Integer& Integer::operator*(const Integer& integer_b)
 			auxiliar_array_b = list_integer_b->get_data();
 			array_a_max = auxiliar_array_a->getCapacity();
 			array_a_quantity = auxiliar_array_a->getQuantity();
-
 			array_b_max = auxiliar_array_b->getCapacity();
 			array_b_quantity = auxiliar_array_b->getQuantity();
-
-			for (int i = auxiliar_array_b->getCapacity() - 1; (i >= array_b_max - array_b_quantity) || carry; i--) { //Si hay acarreo no puede detenerse la suma
+			int b = auxiliar_array_b->getCapacity() - 1;
+			for (int a = auxiliar_array_a->getCapacity() - 1; (a >= array_a_max - array_a_quantity) || carry; a--) { //Si hay acarreo no puede detenerse la suma
 				std::string auxiliar_multiplication;
-
-				if ((*auxiliar_array_a)[i] && (*auxiliar_array_b)[i]) {
-					auxiliar_multiplication = (std::to_string(*(*auxiliar_array_a)[i] * *(*auxiliar_array_b)[i] + carry));
+				if ((*auxiliar_array_b)[b]) {
+					long long cast_a = (long long) *(*auxiliar_array_a)[a];
+					long long cast_b = (long long) *(*auxiliar_array_b)[b];
+					long long multiplication = cast_a * cast_b;
+					auxiliar_multiplication = (std::to_string(multiplication));
 					carry = 0;
+
+					if (auxiliar_multiplication.length() > MAX_DIGITS) { 
+						carry = atoi(auxiliar_multiplication.substr(0, auxiliar_multiplication.length() - MAX_DIGITS).c_str());
+						auxiliar_multiplication = auxiliar_multiplication.substr(auxiliar_multiplication.length() - MAX_DIGITS, auxiliar_multiplication.length());
+					}
+
+
+					if (multiplication_array == nullptr) {
+						multiplication_array = new Array;
+						multiplication_array->agregar(new int(std::stoi(auxiliar_multiplication)));
+						prepend(multiplication_array, integer_multiplication->integer);
+					}
+					else {
+
+						integer_multiplication->add_digits(std::stoi(auxiliar_multiplication));
+
+					}
 				}
 				else {
-					integer_multiplication->add_digits(carry);
-					return *integer_multiplication;
+					if (carry) {
+
+						auxiliar_multiplication = ((*auxiliar_array_a)[a] ? (std::to_string(*(*auxiliar_array_a)[a] + carry)) : std::to_string(carry));
+						carry = 0;
+						if (auxiliar_multiplication.length() > MAX_DIGITS) {
+							carry = (int)auxiliar_multiplication[0] - '0';
+							auxiliar_multiplication = auxiliar_multiplication.substr(1, auxiliar_multiplication.length() - 1);
+						}
+						integer_multiplication->add_digits(stoi(auxiliar_multiplication));
+					}
+					else {
+						integer_multiplication->add_digits(*(*auxiliar_array_a)[a]);
+					}
+					//return *integer_addition;
 				}
 
-				if (auxiliar_multiplication.length() > MAX_DIGITS) {
-					carry = (int)auxiliar_multiplication[0] - '0';
-					auxiliar_multiplication = auxiliar_multiplication.substr(1, auxiliar_multiplication.length() - 1);
-				}
 
-
-				if (multiplication_array == nullptr) {
-					multiplication_array = new Array;
-					multiplication_array->agregar(new int(std::stoi(auxiliar_multiplication)));
-					prepend(multiplication_array, integer_multiplication->integer);
-				}
-				else {
-
-					integer_multiplication->add_digits(std::stoi(auxiliar_multiplication));
-
-				}
-
+				b--;
 
 
 			}
@@ -344,6 +360,7 @@ Integer& Integer::operator*(const Integer& integer_b)
 	catch (int) {
 		// At least one of the Integer is empty
 	}
+
 }
 bool Integer::operator>(const Integer& integer_b) {
 
