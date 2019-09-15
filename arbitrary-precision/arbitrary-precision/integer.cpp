@@ -6,11 +6,11 @@ void Integer::add_digits(int digit) {
 	if (arr->getSize() < 0) {
 		//New array
 		Array* new_arr = new Array;
-		new_arr->agregar(new int(digit));
+		new_arr->add(new int(digit));
 		prepend(new_arr, this->integer);
 	}
 	else {
-		arr->agregar(new int(digit));
+		arr->add(new int(digit));
 	}
 
 }
@@ -39,13 +39,13 @@ Integer::Integer(const Integer& integer_b) {
 }
 Integer::Integer(int n) {
 	Array* arr = new Array;
-	arr->agregar(new int(n));
+	arr->add(new int(n));
 	prepend(arr, this->integer);
 }
 
 Integer::Integer(long n) {
 	Array* arr = new Array;
-	arr->agregar(new int(n));
+	arr->add(new int(n));
 	prepend(arr, this->integer);
 }
 
@@ -66,7 +66,7 @@ Integer& Integer::parse(std::string string_n)
 		if (i < MAX_DIGITS) {
 			if (parse->integer == nullptr) {
 				arr = new Array;
-				arr->agregar(new int(atoi(string_n.substr(0, i).c_str())));
+				arr->add(new int(atoi(string_n.substr(0, i).c_str())));
 				prepend(arr, parse->integer);
 			}
 			else {
@@ -76,7 +76,7 @@ Integer& Integer::parse(std::string string_n)
 		else {
 			if (parse->integer == nullptr) {
 				arr = new Array;
-				arr->agregar(new int(atoi(string_n.substr(i - MAX_DIGITS, MAX_DIGITS).c_str())));
+				arr->add(new int(atoi(string_n.substr(i - MAX_DIGITS, MAX_DIGITS).c_str())));
 				prepend(arr, parse->integer);
 			}else{
 				parse->add_digits(atoi(string_n.substr(i - MAX_DIGITS, MAX_DIGITS).c_str()));
@@ -118,6 +118,12 @@ Integer& Integer::operator=(const Integer& integer_b)
 Integer& Integer::operator+=(const Integer& integer_b)
 {
 	*this = (*this + integer_b);
+	return *this;
+}
+
+Integer& Integer::operator-=(const Integer& integer_b)
+{
+	*this = (*this - integer_b);
 	return *this;
 }
 
@@ -201,7 +207,7 @@ Integer& Integer::operator+(const Integer& integer_b)
 
 					if (addition_array == nullptr) {
 						addition_array = new Array;
-						addition_array->agregar(new int(std::stoi(auxiliar_addition)));
+						addition_array->add(new int(std::stoi(auxiliar_addition)));
 						prepend(addition_array, integer_addition->integer);
 					}
 					else {
@@ -240,6 +246,127 @@ Integer& Integer::operator+(const Integer& integer_b)
 
 
 		return *integer_addition;
+
+	}
+	catch (int) {
+		// At least one of the Integer is empty
+	}
+
+}
+Integer& Integer::operator-(const Integer& integer_b)
+{
+
+	int size_a = elements(this->integer);
+	int size_b = elements(integer_b.getInteger());
+
+	try {
+		if (size_a == 0 || size_b == 0) {
+			throw 0;
+		}
+
+		Array auxiliar_array_a;
+		Array* auxiliar_array_b = nullptr;
+		NodoDoble<Array>* list_integer_a = last(this->integer);
+		NodoDoble<Array>* list_integer_b = last(integer_b.integer);
+
+
+		// New Integer
+		// *this + integer_b
+		Array* subtraction_array = nullptr;
+		Integer* integer_subtraction = new Integer();
+
+		int borrow = 0;
+
+		int array_a_max = 0;
+		int array_b_max = 0;
+		int array_a_quantity = 0;
+		int array_b_quantity = 0;
+		/*
+		Lists
+		*/
+		while (list_integer_a != nullptr && list_integer_b != nullptr) {
+
+			/*
+			Arrays
+			*/
+			if (list_integer_a) {
+				list_integer_a = list_integer_a;
+				auxiliar_array_a = *list_integer_a->get_data();
+				array_a_max = auxiliar_array_a.getCapacity();
+				array_a_quantity = auxiliar_array_a.getQuantity();
+			}
+			if (list_integer_b) {
+				list_integer_b = list_integer_b;
+				auxiliar_array_b = list_integer_b->get_data();
+				array_b_max = auxiliar_array_b->getCapacity();
+				array_b_quantity = auxiliar_array_b->getQuantity();
+			}
+
+			int a = array_a_max - 1;
+			for (int b = array_b_max - 1; b >= array_b_max - array_b_quantity; a--, b--) {
+				std::string auxiliar_subtraction;
+				if ((auxiliar_array_a)[a]) {
+					if (*(auxiliar_array_a)[a] >= *(*auxiliar_array_b)[b]) {
+						auxiliar_subtraction = (std::to_string(*(auxiliar_array_a)[a] - *(*auxiliar_array_b)[b]));
+						if (subtraction_array == nullptr) {
+							subtraction_array = new Array;
+							subtraction_array->add(new int(std::stoi(auxiliar_subtraction)));
+							prepend(subtraction_array, integer_subtraction->integer);
+						}
+						else {
+
+							integer_subtraction->add_digits(std::stoi(auxiliar_subtraction));
+
+						}
+					}
+					else { // Borrow or negative
+
+						if ((auxiliar_array_a)[a - 1]) { //Previous cell
+							auxiliar_array_a.interchange(new int(*(auxiliar_array_a)[a - 1] - 1), a - 1);
+							std::string auxiliar_string = std::to_string((int)std::to_string(*(auxiliar_array_a)[a-1])[0] - '0' + 10) + std::to_string(*(auxiliar_array_a)[a]).substr(1, std::to_string(*(auxiliar_array_a)[a]).length());
+							long long cast_a = (long long) atoll(auxiliar_string.c_str());
+							long long cast_b = (long long) *(*auxiliar_array_b)[b];
+							int subtraction = cast_a - cast_b;
+							if (subtraction_array == nullptr) {
+								subtraction_array = new Array;
+								subtraction_array->add(new int(subtraction));
+								prepend(subtraction_array, integer_subtraction->integer);
+							}
+							else {
+
+								integer_subtraction->add_digits(atoll(auxiliar_string.c_str()) - *(*auxiliar_array_b)[b]);
+
+							}
+						}
+						else if (list_integer_a->get_previous()) { //Previous node
+
+						}
+						else { //Negative
+
+						}
+
+					}
+
+				}
+
+			}
+			if ((auxiliar_array_a)[a]) {
+
+				for (int a_aux = a; a_aux >= array_a_max - array_a_quantity; a_aux--) {
+					integer_subtraction->add_digits(*(auxiliar_array_a)[a_aux]);
+				}
+
+			}
+			if (list_integer_a) {
+				list_integer_a = list_integer_a->get_previous();
+			}
+			if (list_integer_b) {
+				list_integer_b = list_integer_b->get_previous();
+			}
+		}
+
+
+		return *integer_subtraction;
 
 	}
 	catch (int) {
@@ -407,7 +534,7 @@ Integer& Integer::operator*(const Integer& integer_b)
 						}
 						if (multiplication_array == nullptr) {
 							multiplication_array = new Array;
-							multiplication_array->agregar(new int(std::stoi(auxiliar_multiplication)));
+							multiplication_array->add(new int(std::stoi(auxiliar_multiplication)));
 							prepend(multiplication_array, integer_multiplication->integer);
 						}
 						else {
@@ -432,7 +559,7 @@ Integer& Integer::operator*(const Integer& integer_b)
 
 							if (multiplication_array == nullptr) {
 								multiplication_array = new Array;
-								multiplication_array->agregar(new int(std::stoi(auxiliar_multiplication)));
+								multiplication_array->add(new int(std::stoi(auxiliar_multiplication)));
 								prepend(multiplication_array, integer_multiplication->integer);
 							}
 							else {
@@ -547,7 +674,7 @@ Integer& Integer::operator*(const Integer& integer_b)
 
 	//				if (multiplication_array == nullptr) {
 	//					multiplication_array = new Array;
-	//					multiplication_array->agregar(new int(std::stoi(auxiliar_multiplication)));
+	//					multiplication_array->add(new int(std::stoi(auxiliar_multiplication)));
 	//					prepend(multiplication_array, integer_multiplication->integer);
 	//				}
 	//				else {

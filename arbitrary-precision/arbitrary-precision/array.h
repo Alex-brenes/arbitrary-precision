@@ -20,7 +20,8 @@ public:
 	int getSize() const;
 	int getQuantity() const;
 	int countDigits(int) const;
-	bool agregar(int*);
+	bool add(int*);
+	bool interchange(int*, int);
 	~Array();
 	Array& operator=(const Array&);
 	int* operator[](int) const;

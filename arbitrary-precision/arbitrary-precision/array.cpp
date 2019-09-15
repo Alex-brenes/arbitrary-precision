@@ -56,7 +56,7 @@ int Array::countDigits(int index) const
 	return counter;
 }
 
-bool Array::agregar(int* val)
+bool Array::add(int* val)
 {
 	//End
 	if (size >= 0) {
@@ -85,6 +85,17 @@ bool Array::agregar(int* val)
 	//	return false;
 	//}
 	
+}
+
+bool Array::interchange(int* n, int index)
+{
+	if (index >= size && index < capacity) {
+		delete this->_arr[index];
+		this->_arr[index] = n;
+	}
+	else {
+		return false;
+	}
 }
 
 Array::~Array()
