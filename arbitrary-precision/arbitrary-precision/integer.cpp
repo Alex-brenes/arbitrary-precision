@@ -304,57 +304,172 @@ Integer& Integer::operator-(const Integer& integer_b)
 
 			int a = array_a_max - 1;
 			for (int b = array_b_max - 1; b >= array_b_max - array_b_quantity; a--, b--) {
-				std::string auxiliar_subtraction;
-				if ((auxiliar_array_a)[a]) {
-					if (*(auxiliar_array_a)[a] >= *(*auxiliar_array_b)[b]) {
-						auxiliar_subtraction = (std::to_string(*(auxiliar_array_a)[a] - *(*auxiliar_array_b)[b]));
-						if (subtraction_array == nullptr) {
-							subtraction_array = new Array;
-							subtraction_array->add(new int(std::stoi(auxiliar_subtraction)));
-							prepend(subtraction_array, integer_subtraction->integer);
-						}
-						else {
+				std::string num_a = std::to_string(*(auxiliar_array_a)[a]);
+				std::string num_b = std::to_string(*(*auxiliar_array_b)[b]);
+				int digit_a = 0;
+				int digit_b = 0;
+				std::string subtraction;
+				int a_digit_index = num_a.length() - 1;
+				int b_digit_index = num_b.length() - 1;
+				while (a_digit_index >= 0 || b_digit_index >= 0) {
 
-							integer_subtraction->add_digits(std::stoi(auxiliar_subtraction));
+					
+					if (a_digit_index < 0) {
+						//Negative
+						integer_subtraction->add_digits(stoi(num_b.substr(0, b_digit_index)));
+					}
+					else if(b_digit_index < 0){
+						//Positive
+						std::cout << a_digit_index;
+						subtraction = ((a_digit_index == 0) ? std::string(1, (num_a[0])) : num_a.substr(0, a_digit_index)) + subtraction;
+						//integer_subtraction->add_digits((a_digit_index == 0 ? (int)num_a[0] - '0' : stoi(num_a.substr(0, a_digit_index))));
+					}
+					else {
+						digit_a = (int)num_a[a_digit_index] - '0';
+						digit_b = (int)num_b[b_digit_index] - '0';
+
+						if (digit_a >= digit_b) {
+							int resta = digit_a - digit_b;
+							subtraction = std::to_string(resta) + subtraction;
+
+						}
+						else if (list_integer_a->get_previous()) {
+							bool k = true;
+							NodoDoble<Array>* aux = list_integer_a;
+							std::string num_a_auxiliar = num_a;
+							int i = a_digit_index - 1;
+							while (k) { //List 
+								Array auxiliar_number(*(aux->get_data()));
+								int auxiliar_number_index = auxiliar_number.getCapacity() - 1;
+								while (auxiliar_number_index >= 0) { //Array
+									num_a_auxiliar = *(*aux->get_data())[auxiliar_number_index];
+									while (i >= 0) { // Number
+										if ((int)num_a_auxiliar[i] - '0' > 0) {
+											num_a_auxiliar[i] = (((int)(num_a_auxiliar[i] - '0')) - 1) + '0';
+											aux->get_data()->interchange(new int(stoi(num_a_auxiliar)), auxiliar_number_index);
+											digit_a += 10;
+											subtraction = std::to_string(digit_a - digit_b) + subtraction;
+											k = false;
+											break;
+										}
+										i--;
+									}
+									aux = aux->get_previous();
+									if (aux == nullptr) {
+										k = false;
+									}
+									else {
+										i = aux->get_data()->getCapacity() - 1;
+									}
+								}
+							}
+
+
+						}
+						else if (auxiliar_array_a[a - 1]) {
+
+						}
+						else if (list_integer_a->get_previous()) {
 
 						}
 					}
-					else { // Borrow or negative
+					
+					
 
-						if ((auxiliar_array_a)[a - 1]) { //Previous cell
-							auxiliar_array_a.interchange(new int(*(auxiliar_array_a)[a - 1] - 1), a - 1);
-							std::string auxiliar_string = std::to_string((int)std::to_string(*(auxiliar_array_a)[a-1])[0] - '0' + 10) + std::to_string(*(auxiliar_array_a)[a]).substr(1, std::to_string(*(auxiliar_array_a)[a]).length());
-							long long cast_a = (long long) atoll(auxiliar_string.c_str());
-							long long cast_b = (long long) *(*auxiliar_array_b)[b];
-							int subtraction = cast_a - cast_b;
-							if (subtraction_array == nullptr) {
-								subtraction_array = new Array;
-								subtraction_array->add(new int(subtraction));
-								prepend(subtraction_array, integer_subtraction->integer);
-							}
-							else {
+					a_digit_index--;
+					b_digit_index--;
+				}
 
-								integer_subtraction->add_digits(atoll(auxiliar_string.c_str()) - *(*auxiliar_array_b)[b]);
+				//for (int a = num_a.length() - 1; a >= 0; a--) {
+				//	digit_a = (int)num_a[a] - '0';
+				//	for (int b = num_a.length() - 1; b >= 0; b--) {
+				//		digit_b = (int)num_a[b] - '0';
+				//		if (digit_a >= digit_b) {
+				//			int resta = digit_a - digit_b;
+				//			subtraction = std::to_string(resta) + subtraction;
+				//		}
+				//		else if (a - 1 >= 0) { //There are more digits 
 
-							}
-						}
-						else if (list_integer_a->get_previous()) { //Previous node
+				//			int i = num_a.length() - 1 - a;
+				//			while (i >= 0) {
+				//				if ((int) num_a[i] - '0' > 0) {
+				//					num_a[i] = (((int)(num_a[i] - '0')) - 1) + '0';
+				//					digit_a += 10;
+				//					subtraction = std::to_string(digit_a - digit_b) + subtraction;
+				//					break;
+				//				}
+				//				i--;
+				//			}
+				//			
+				//			//NodoDoble<Array>* aux_node = list_integer_a->get_previous();
+				//			//int i = a - 1;
 
-						}
-						else { //Negative
+				//			//while (*(auxiliar_array_a)[i] <= 0) {
+				//			//	i--;
+				//			//	if (i < 0) {
+				//			//		aux_node = aux_node->get_previous();
+				//			//		i = aux_node->get_data()->getCapacity();
+				//			//	}
+				//			//}
 
-						}
+				//			//auxiliar_array_a.interchange(new int(*(auxiliar_array_a)[i] - 1), i);
 
-					}
+
+				//		}
+				//		else if(auxiliar_array_a[a - 1]){ //There are more cells
+				//		}
+				//		else if(list_integer_a->get_previous()){
+
+				//		}
+				//		else { //Negative
+				//			subtraction += std::to_string(digit_a - digit_b);
+				//		}
+				//		
+
+				//	}
+				//}
+				if (subtraction_array == nullptr) {
+					subtraction_array = new Array;
+					subtraction_array->add(new int(std::stoi(subtraction)));
+					prepend(subtraction_array, integer_subtraction->integer);
+				}
+				else {
+
+					integer_subtraction->add_digits(std::stoi(subtraction));
 
 				}
 
-			}
-			if ((auxiliar_array_a)[a]) {
+			//	if ((auxiliar_array_a)[a]) {
+			//		if (*(auxiliar_array_a)[a] >= *(*auxiliar_array_b)[b]) {
+			//			auxiliar_subtraction = (std::to_string(*(auxiliar_array_a)[a] - *(*auxiliar_array_b)[b]));
+			//			if (subtraction_array == nullptr) {
+			//				subtraction_array = new Array;
+			//				subtraction_array->add(new int(std::stoi(auxiliar_subtraction)));
+			//				prepend(subtraction_array, integer_subtraction->integer);
+			//			}
+			//			else {
 
-				for (int a_aux = a; a_aux >= array_a_max - array_a_quantity; a_aux--) {
-					integer_subtraction->add_digits(*(auxiliar_array_a)[a_aux]);
-				}
+			//				integer_subtraction->add_digits(std::stoi(auxiliar_subtraction));
+
+			//			}
+			//		}
+			//		else { // Borrow or negative
+			//			NodoDoble<Array>* aux_node = list_integer_a;
+			//			
+			//			while (aux_node || ) {
+
+			//			}
+
+			//		}
+
+			//	}
+
+			//}
+			//if ((auxiliar_array_a)[a] && (*(auxiliar_array_a)[a]) != 0) {
+
+			//	for (int a_aux = a; a_aux >= array_a_max - array_a_quantity; a_aux--) {
+			//		integer_subtraction->add_digits(*(auxiliar_array_a)[a_aux]);
+			//	}
 
 			}
 			if (list_integer_a) {
