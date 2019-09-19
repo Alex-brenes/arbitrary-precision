@@ -357,13 +357,11 @@ Integer& Integer::operator-(const Integer& integer_b)
 			Array* aux_p = list_integer_a_prev->get_data();
 			while (list_integer_a_prev) {
 				aux_p = list_integer_a_prev->get_data();
-				a = aux_p->getCapacity() - 1;
 				while ((*aux_p)[a]) {
 					integer_subtraction->add_digits(*(*aux_p)[a--]);
 				}
 				list_integer_a_prev = list_integer_a_prev->get_next();
-
-
+				a = aux_p->getCapacity() - 1;
 			}
 		}
 		else if (list_integer_b_prev != nullptr && list_integer_a == nullptr) { // Negative
