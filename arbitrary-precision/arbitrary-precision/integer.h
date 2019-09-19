@@ -39,6 +39,7 @@ public:
 	bool operator>=(const Integer&);
 	bool operator==(const Integer&);
 	bool operator!=(const Integer&);
+	std::string toString();
 	~Integer();
 	friend std::ostream& operator<<(std::ostream&, const Integer&);
 };
