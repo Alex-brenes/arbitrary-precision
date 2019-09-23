@@ -26,7 +26,6 @@ public:
 	Array& operator=(const Array&);
 	int* operator[](int) const;
 
-
 };
 
 std::ostream& operator<<(std::ostream&, const Array&);

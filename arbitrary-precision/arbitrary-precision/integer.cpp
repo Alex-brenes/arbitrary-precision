@@ -1,5 +1,8 @@
 #include "integer.h"
 
+const Integer Integer::ONE = Integer(1);
+const Integer Integer::ZERO = Integer(0);
+
 void Integer::add_digits(int digit) {
 	//Head array
 	Array * arr = (*this->integer)->get_data();
@@ -264,6 +267,10 @@ Integer& Integer::operator-(const Integer& integer_b)
 			throw 0;
 		}
 
+		if (*this == integer_b) {
+			return *(new Integer(ZERO));
+		}
+
 		Array auxiliar_array_a;
 		Array* auxiliar_array_b = nullptr;
 
@@ -353,7 +360,7 @@ Integer& Integer::operator-(const Integer& integer_b)
 
 		//Check whether are digits left in some Integer
 		
-		if (list_integer_a_prev != nullptr && list_integer_b == nullptr) { // Positive
+		if (list_integer_a_prev != nullptr && list_integer_b == nullptr && (*list_integer_a_prev->get_data())[a]) { // Positive
 			Array* aux_p = list_integer_a_prev->get_data();
 			while (list_integer_a_prev) {
 				aux_p = list_integer_a_prev->get_data();
@@ -365,9 +372,25 @@ Integer& Integer::operator-(const Integer& integer_b)
 			}
 		}
 		else if (list_integer_b_prev != nullptr && list_integer_a == nullptr) { // Negative
-			std::cout << "";
+			Array* aux_p = list_integer_b_prev->get_data();
+			while (list_integer_b_prev) {
+				aux_p = list_integer_b_prev->get_data();
+				while ((*aux_p)[b]) {
+					if (std::to_string(*(*aux_p)[b]).length() < MAX_DIGITS) {
+						integer_subtraction->add_digits((-1) * *(*aux_p)[b--]);
+					}
+					else if(list_integer_b_prev->get_next() == nullptr && (*aux_p)[b - 1] == nullptr){
+						integer_subtraction->add_digits(*(*aux_p)[b--]);
+						integer_subtraction->add_digits(0);
+					}
+					else {
+						integer_subtraction->add_digits(*(*aux_p)[b--]);
+					}
+				}
+				list_integer_b_prev = list_integer_b_prev->get_next();
+				b = aux_p->getCapacity() - 1;
+			}
 		}
-
 		//while (list_integer_a != nullptr && list_integer_b != nullptr) {
 
 		//	/*
@@ -1137,9 +1160,10 @@ std::ostream& operator<<(std::ostream& output, const Integer& integer) {
 		while (aux != nullptr) {
 			if (aux->get_previous() == nullptr) {
 				Array* auxiliar_array = aux->get_data();
+				int first = auxiliar_array->getCapacity() - auxiliar_array->getQuantity();
 				std::string number = std::to_string(*(*auxiliar_array)[auxiliar_array->getCapacity() - auxiliar_array->getQuantity()]);
 				//Signed number
-				if (number[0] == '0' && aux->get_next()) { 
+				if (number[0] == '0' && (aux->get_next() || (*auxiliar_array)[auxiliar_array->getCapacity() - auxiliar_array->getQuantity() + 1])) {
 					std::stringstream s;
 					int digits = aux->get_data()->countDigits(aux->get_data()->getCapacity() - aux->get_data()->getQuantity());
 					s << *(aux->get_data());

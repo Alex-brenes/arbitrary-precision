@@ -8,12 +8,14 @@
 #include "doublelinkedlist.h"
 #include "array.h"
 #define MAX_DIGITS 9
-#define ZERO 0
-#define ONE 1
+//#define ZERO 0
+//#define ONE 1
 
 class Integer {
 
 private:
+	static const Integer ONE;
+	static const Integer ZERO;
 	NodoDoble<Array>** integer;
 	void add_digits(int);
 	int cantidadDigitos() const;
@@ -42,6 +44,9 @@ public:
 	std::string toString();
 	~Integer();
 	friend std::ostream& operator<<(std::ostream&, const Integer&);
+
+
+
 };
 
 
