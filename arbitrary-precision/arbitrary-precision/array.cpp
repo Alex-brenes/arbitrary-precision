@@ -87,6 +87,15 @@ bool Array::add(int* val)
 	
 }
 
+bool Array::add_shifted(int* val)
+{
+	if (std::to_string(*_arr[size + 1]).length() < 9) {
+		_arr[size + 1] = new int(atoi((std::to_string(*val) + std::to_string(*_arr[size + 1])).c_str()));
+		return true;
+	}
+	return false;
+}
+
 bool Array::interchange(int* n, int index)
 {
 	if (index >= size && index < capacity) {
@@ -129,6 +138,11 @@ int*  Array::operator[](int i) const
 	else {
 		return nullptr;
 	}
+}
+
+int Array::f_index()
+{ //Returns the first non-null position in the array
+	return this->getCapacity() - this->getQuantity();
 }
 
 std::ostream& operator<<(std::ostream& output, const Array& arr)

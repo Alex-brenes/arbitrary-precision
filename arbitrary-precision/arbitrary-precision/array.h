@@ -21,11 +21,12 @@ public:
 	int getQuantity() const;
 	int countDigits(int) const;
 	bool add(int*);
+	bool add_shifted(int*);
 	bool interchange(int*, int);
 	~Array();
 	Array& operator=(const Array&);
 	int* operator[](int) const;
-
+	int f_index();
 };
 
 std::ostream& operator<<(std::ostream&, const Array&);

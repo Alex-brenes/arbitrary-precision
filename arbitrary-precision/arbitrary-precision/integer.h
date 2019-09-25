@@ -5,6 +5,7 @@
 #define INTEGER_H
 #include <string>
 #include <sstream>
+#include <math.h>
 #include "doublelinkedlist.h"
 #include "array.h"
 #define MAX_DIGITS 9
@@ -20,6 +21,7 @@ private:
 	void add_digits(int);
 	int cantidadDigitos() const;
 	NodoDoble<Array>** getInteger() const;
+	void add_shifted_digits(int);
 public:
 	Integer();
 	Integer(const Integer&);
