@@ -62,8 +62,40 @@ NodoDoble<Array>** Integer::getInteger() const {
 	return this->integer;
 }
 
-void Integer::add_shifted_digits(int n) {
-	
+void Integer::add_one_by_one(int n)
+{
+	while (n > 0) {
+		add_one_digit(n % 10);
+		n /= 10;
+	}
+}
+
+
+void Integer::add_one_digit(int z) {
+	if (!empty(this->integer)) {
+
+		Array* aux = (*this->integer)->get_data();
+
+		if (aux->countDigits(aux->f_index()) < MAX_DIGITS) {
+			aux->add_shifted(new int(z));
+		}
+		else {
+			this->add_digits(z);
+		}
+	}
+	else {
+		this->add_digits(z);
+	}
+}
+
+void Integer::add_shift()
+{
+	this->add_one_digit(0);
+}
+
+void Integer::clear_integer()
+{
+	clear(integer);
 }
 
 Integer& Integer::parse(std::string string_n)
@@ -745,54 +777,83 @@ Integer& Integer::operator*(const Integer& integer_b)
 		while (list_integer_b != nullptr) {
 			auxiliar_array_b = list_integer_b->get_data();
 			for (int b = auxiliar_array_b->getCapacity() - 1; b >= auxiliar_array_b->f_index(); b--) { // B array
-				int w = pow(10, auxiliar_array_b->getCapacity() - (b + 1));
-				b_digit = (*(*auxiliar_array_b)[b] / w) % (10 * auxiliar_array_b->getCapacity() - b);
-				list_integer_a_aux = list_integer_a;
-				while (list_integer_a_aux) { // integer_a
-					auxiliar_array_a = list_integer_a_aux->get_data();
-					for (int a = auxiliar_array_a->getCapacity() - 1; a >= auxiliar_array_a->f_index() || carry; a--) { // A array
-						long long cast_mult = 0;
-						if (!(*auxiliar_array_a)[a] && carry) {
-							cast_mult = carry;
-							carry = 0;
-						}
-						else {
+				int num = *(*auxiliar_array_b)[b];
+				int pw = 0;
+				while (num > 0) {
+					b_digit = num % 10;
+					num /= 10;
 
-
-							cast_mult = (long long)b_digit * (long long) * (*auxiliar_array_a)[a] + carry;
-							carry = 0;
-							if (std::to_string(cast_mult).length() > MAX_DIGITS) { //Carry
-								carry = (int)std::to_string(cast_mult)[0] - '0';
-								cast_mult = std::stoll(std::to_string(cast_mult).substr(1, std::to_string(cast_mult).length()));
-							}
-							if (list_integer_a_aux->get_next() == nullptr) {
-								// Add the shifts
-								int z = 0;
-								if (shift >= MAX_DIGITS) {
-									for (z = shift; z > 0; z -= 9) {
-										addition_aux.add_digits(0);
-									}
-								}
-
-								// Add the left shifts
-								//falta...
-								//multiplication_array = new Array;
-								//multiplication_array->add(new int(cast_mult));
-								//prepend(multiplication_array, integer_multiplication->integer);
-							}
-						}
-						addition_aux.add_digits(cast_mult);
+					//Add the shifts
+					int i = shift;
+					while (i > 0) {
+						addition_aux.add_shift();
+						i--;
 					}
-					list_integer_a_aux = list_integer_a_aux->get_previous();
+
+					list_integer_a_aux = list_integer_a;
+					while (list_integer_a_aux) { // integer_a
+						auxiliar_array_a = list_integer_a_aux->get_data();
+						for (int a = auxiliar_array_a->getCapacity() - 1; a >= auxiliar_array_a->f_index() || carry; a--) { // A array
+							long long cast_mult = 0;
+							if (!(*auxiliar_array_a)[a] && carry) {
+								cast_mult = carry;
+								carry = 0;
+							}
+							else {
+
+
+								cast_mult = (long long)b_digit * (long long) * (*auxiliar_array_a)[a] + carry;
+								carry = 0;
+								if (std::to_string(cast_mult).length() > MAX_DIGITS) { //Carry
+									carry = (int)std::to_string(cast_mult)[0] - '0';
+									cast_mult = std::stoll(std::to_string(cast_mult).substr(1, std::to_string(cast_mult).length()));
+								}
+								if (list_integer_a_aux->get_next() == nullptr) {
+									// Add the shifts
+									//int z = 0;
+									//if (shift >= MAX_DIGITS) {
+									//	for (z = shift; z > 0; z -= 9) {
+									//		addition_aux.add_digits(0);
+									//	}
+									//}
+
+									// Add the left shifts
+									//falta...
+									//multiplication_array = new Array;
+									//multiplication_array->add(new int(cast_mult));
+									//prepend(multiplication_array, integer_multiplication->integer);
+								}
+							}
+							if (b_digit == 0 && (*auxiliar_array_a)[a]) {
+								int qtty_z = *(*auxiliar_array_a)[a];
+								while (qtty_z > 0) {
+									addition_aux.add_shift();
+									qtty_z /= 10;
+								}
+							}
+							else {
+								addition_aux.add_one_by_one(cast_mult);
+							}
+						}
+						list_integer_a_aux = list_integer_a_aux->get_previous();
+					}
+					std::cout << "\n" << addition_aux;
+					if (!integer_multiplication->integer) {
+						*integer_multiplication = addition_aux;
+					}
+					else {
+						*integer_multiplication += addition_aux;
+					}
+					addition_aux.clear_integer();
+
+					shift++;
 				}
-				shift++;
+				//int w = pow(10, auxiliar_array_b->getCapacity() - (b + 1));
+				//b_digit = (*(*auxiliar_array_b)[b] / w) % (10 * auxiliar_array_b->getCapacity() - b);
+
+			
 			}
-			if (!integer_multiplication->integer) {
-				*integer_multiplication = addition_aux;
-			}
-			else {
-				*integer_multiplication += addition_aux;
-			}
+
 			list_integer_b = list_integer_b->get_previous();
 		}
 

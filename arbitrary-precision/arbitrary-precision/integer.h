@@ -21,7 +21,10 @@ private:
 	void add_digits(int);
 	int cantidadDigitos() const;
 	NodoDoble<Array>** getInteger() const;
-	void add_shifted_digits(int);
+	void add_one_by_one(int);
+	void add_one_digit(int);
+	void add_shift();
+	void clear_integer();
 public:
 	Integer();
 	Integer(const Integer&);
