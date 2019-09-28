@@ -28,6 +28,7 @@ public:
 	Array& operator=(const Array&);
 	int* operator[](int) const;
 	int f_index();
+	void reduceSize();
 };
 
 std::ostream& operator<<(std::ostream&, const Array&);

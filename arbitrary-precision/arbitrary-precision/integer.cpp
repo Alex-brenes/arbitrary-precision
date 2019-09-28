@@ -24,7 +24,7 @@ void Integer::add_digits(int digit) {
 	}
 }
 
-int Integer::cantidadDigitos() const {
+int Integer::digits() const {
 	Array* arr = (*this->integer)->get_data();
 	int digits = (elements(this->integer) - 1) * (MAX_DIGITS * arr->getQuantity());
 	int aux = 0;
@@ -58,12 +58,14 @@ Integer::Integer(const Integer& integer_b) {
 	}
 }
 Integer::Integer(int n) {
+	this->integer = nullptr;
 	Array* arr = new Array;
 	arr->add(new int(n));
 	prepend(arr, this->integer);
 }
 
 Integer::Integer(long n) {
+	this->integer = nullptr;
 	Array* arr = new Array;
 	arr->add(new int(n));
 	prepend(arr, this->integer);
@@ -671,93 +673,6 @@ Integer& Integer::operator-(const Integer& integer_b)
 }
 Integer& Integer::operator*(const Integer& integer_b)
 {
-	//int size_a = elements(this->integer);
-	//int size_b = elements(integer_b.getInteger());
-
-	//try {
-	//	if (size_a == 0 || size_b == 0) {
-	//		throw 0;
-	//	}
-
-	//	Array* auxiliar_array_a = nullptr;
-	//	Array* auxiliar_array_b = nullptr;
-	//	NodoDoble<Array>* list_integer_a = nullptr;
-	//	NodoDoble<Array>* list_integer_b = nullptr;
-
-	//	if (*this > integer_b) {
-	//		// this
-	//		list_integer_a = last(this->integer);
-
-	//		// integer_b
-	//		list_integer_b = last(integer_b.integer);
-	//	}
-	//	else {
-	//		// this
-	//		list_integer_b = last(this->integer);
-
-	//		// integer_b
-	//		list_integer_a = last(integer_b.integer);
-	//	}
-
-
-
-	//	// New Integer
-	//	// *this + integer_b
-	//	Array* multiplication_array = nullptr;
-	//	Integer* integer_multiplication = new Integer();
-
-	//	int carry = 0;
-
-
-	//	while (list_integer_a != nullptr &&  list_integer_b != nullptr) {
-
-	//		auxiliar_array_b = list_integer_b->get_data();
-
-	//		//integer_b, cell b
-	//		for (int b = auxiliar_array_b->getCapacity() - auxiliar_array_b->getQuantity(); b >= 0; b--) {
-
-	//			int digit = ((*auxiliar_array_a)[b] ? (*(*auxiliar_array_a)[b]) % 10 : throw 0);
-
-
-
-	//		}
-
-	//	}
-
-
-	//}
-	//catch (int) {
-	//	// At least one of the Integer is empty
-	//}
-
-	//int size_a = elements(this->integer);
-	//int size_b = elements(integer_b.getInteger());
-
-	//try {
-	//	if (size_a == 0 || size_b == 0) {
-	//		throw 0;
-	//	}
-
-	//	Array* auxiliar_array_a = nullptr;
-	//	Array* auxiliar_array_b = nullptr;
-	//	NodoDoble<Array>* list_integer_a = nullptr;
-	//	NodoDoble<Array>* list_integer_b = nullptr;
-
-	//	if (*this > integer_b) {
-	//		// this
-	//		list_integer_a = last(this->integer);
-
-	//		// integer_b
-	//		list_integer_b = last(integer_b.integer);
-	//	}
-	//	else {
-	//		// this
-	//		list_integer_b = last(this->integer);
-
-	//		// integer_b
-	//		list_integer_a = last(integer_b.integer);
-	//	}
-
 	int size_a = elements(this->integer);
 	int size_b = elements(integer_b.getInteger());
 	try {
@@ -765,15 +680,11 @@ Integer& Integer::operator*(const Integer& integer_b)
 			throw 0;
 		}
 
-		if (*this == ZERO || integer_b == ZERO) {
-
-		}
-
 		Array* auxiliar_array_a = nullptr;
 		Array* auxiliar_array_b = nullptr;
 		NodoDoble<Array>* list_integer_a = nullptr;
-		NodoDoble<Array>* list_integer_a_aux = nullptr;
 		NodoDoble<Array>* list_integer_b = nullptr;
+
 		if (*this > integer_b) {
 			// this
 			list_integer_a = last(this->integer);
@@ -789,339 +700,571 @@ Integer& Integer::operator*(const Integer& integer_b)
 			list_integer_a = last(integer_b.integer);
 		}
 
+
+
 		// New Integer
-		// *this * integer_b
+		// *this + integer_b
 		Array* multiplication_array = nullptr;
 		Integer* integer_multiplication = new Integer();
-
-		//The addition auxiliar array
-
-		Integer addition_aux;
-
 		int carry = 0;
+
+
+		NodoDoble<Array>* list_integer_a_aux = nullptr;
+		Integer addition_aux;
 		int shift = 0;
-
-		/*
-		Lists
-		*/
-		// integer_b
+		int num = 0;
 		int b_digit = 0;
-		while (list_integer_b != nullptr) {
-			auxiliar_array_b = list_integer_b->get_data();
-			for (int b = auxiliar_array_b->getCapacity() - 1; b >= auxiliar_array_b->f_index(); b--) { // B array
-				int num = *(*auxiliar_array_b)[b];
-				int pw = 0;
-				while (num > 0) {
-					b_digit = num % 10;
-					num /= 10;
+		while (list_integer_b != nullptr || carry) {
+			if (list_integer_b == nullptr && carry) {
+				addition_aux = parse(addition_aux.toString() + std::string(shift, '0'));
+				addition_aux.add_digits(carry);
+				*integer_multiplication += addition_aux;
 
-					//Add the shifts
-					std::string shift_len(shift,'0');
-					
-					list_integer_a_aux = list_integer_a;
-					while (list_integer_a_aux) { // integer_a
-						auxiliar_array_a = list_integer_a_aux->get_data();
-						for (int a = auxiliar_array_a->getCapacity() - 1; a >= auxiliar_array_a->f_index() || carry; a--) { // A array
-							long long cast_mult = 0;
-							if (!(*auxiliar_array_a)[a] && carry) {
-								cast_mult = carry;
-								carry = 0;
-							}
-							else {
+				carry = 0;
+			}
+			else {
 
 
-								cast_mult = (long long)b_digit * (long long) * (*auxiliar_array_a)[a] + carry;
-								carry = 0;
-								if (std::to_string(cast_mult).length() > MAX_DIGITS) { //Carry
-									carry = (int)std::to_string(cast_mult)[0] - '0';
-									cast_mult = std::stoll(std::to_string(cast_mult).substr(1, std::to_string(cast_mult).length()));
-								}
-								if (list_integer_a_aux->get_next() == nullptr) {
-									// Add the shifts
-									//int z = 0;
-									//if (shift >= MAX_DIGITS) {
-									//	for (z = shift; z > 0; z -= 9) {
-									//		addition_aux.add_digits(0);
-									//	}
-									//}
+				auxiliar_array_b = list_integer_b->get_data();
+				for (int b = auxiliar_array_b->getCapacity() - 1; b >= auxiliar_array_b->f_index(); b--) { // B array
+					num = *(*auxiliar_array_b)[b];
+					while (num > 0) {
+						b_digit = num % 10;
+						num /= 10;
 
-									// Add the left shifts
-									//falta...
-									//multiplication_array = new Array;
-									//multiplication_array->add(new int(cast_mult));
-									//prepend(multiplication_array, integer_multiplication->integer);
-								}
-							}
-							if (cast_mult == 0) {
-								shift_len += std::string(MAX_DIGITS, '0');
-							}
-							else {
-								if (!shift_len.empty()) {
-									int find_not_zero = cast_mult;
-									while (find_not_zero % 10 == 0) {
-										shift_len += "0";
-										find_not_zero /= 10;
-									}
-									cast_mult = find_not_zero;
-									shift_len = std::to_string(cast_mult % 10) + shift_len;
-									addition_aux = parse(shift_len);
-									cast_mult /= 10;
-									shift_len = "";
-								}
-								if (b_digit == 0 && (*auxiliar_array_a)[a]) {
-									addition_aux.add_digits(cast_mult);
+						//Add the shifts
+						std::string shift_len(shift, '0');
+
+						list_integer_a_aux = list_integer_a;
+						while (list_integer_a_aux) { // integer_a
+							auxiliar_array_a = list_integer_a_aux->get_data();
+							for (int a = auxiliar_array_a->getCapacity() - 1; a >= auxiliar_array_a->f_index() || carry; a--) { // A array
+								long long cast_mult = 0;
+
+								if (!(*auxiliar_array_a)[a] && carry) {
+									addition_aux = parse(addition_aux.toString() + std::string(shift, '0'));
+									addition_aux.add_digits(carry);
+									*integer_multiplication += addition_aux;
+
+									carry = 0;
 								}
 								else {
-									addition_aux.add_one_by_one(cast_mult);
+									cast_mult = (long long)b_digit * (long long) * (*auxiliar_array_a)[a] + carry;
+									carry = 0;
+
+									if (digits_primitive(cast_mult) > MAX_DIGITS) { //Carry
+										int pw = pow(10, (digits_primitive(cast_mult) - 1));
+										carry = cast_mult / pw;
+										long long aa = 1;
+										long long aux_cast = cast_mult;
+										cast_mult = 0;
+										while (aa < pw) {
+											cast_mult += (aux_cast % 10) * aa;
+											aux_cast /= 10;
+											aa *= 10;
+										}
+									}
 								}
+								
+
+								addition_aux.add_digits(cast_mult);
 							}
-							
+							list_integer_a_aux = list_integer_a_aux->get_previous();
 						}
-						list_integer_a_aux = list_integer_a_aux->get_previous();
-					}
-					std::cout << "\nNumero: " << addition_aux;
-					if (!integer_multiplication->integer) {
-						*integer_multiplication = addition_aux;
-					}
-					else {
-						*integer_multiplication += addition_aux;
-					}
-					addition_aux.clear_integer();
-					std::cout << "\nSumatoria: " << *integer_multiplication;
+						//Add the shifts
+						addition_aux = parse(addition_aux.toString() + std::string(shift, '0'));
+						//--
+						//std::cout << "\nNumero: " << addition_aux;
+						if (!integer_multiplication->integer) {
+							*integer_multiplication = addition_aux;
+						}
+						else {
+							*integer_multiplication += addition_aux;
+						}
+						addition_aux.clear_integer();
+						std::cout << "\nSumatoria: " << *integer_multiplication;
 
-					shift++;
+						shift++;
+					}
 				}
-				//int w = pow(10, auxiliar_array_b->getCapacity() - (b + 1));
-				//b_digit = (*(*auxiliar_array_b)[b] / w) % (10 * auxiliar_array_b->getCapacity() - b);
-
-			
 			}
-
 			list_integer_b = list_integer_b->get_previous();
 		}
-
-		//while (list_integer_a != nullptr && list_integer_b != nullptr) {
-
-		//	/*
-		//	Arrays
-		//	*/
-		//	auxiliar_array_a = list_integer_a->get_data();
-		//	auxiliar_array_b = list_integer_b->get_data();
-		//	array_a_max = auxiliar_array_a->getCapacity();
-		//	array_a_quantity = auxiliar_array_a->getQuantity();
-		//	array_b_max = auxiliar_array_b->getCapacity();
-		//	array_b_quantity = auxiliar_array_b->getQuantity();
-		//	//---
-
-
-
-
-		//	//int b = auxiliar_array_b->getCapacity() - 1;
-		//	
-		//	////integer_b
-		//	//for (int b = auxiliar_array_b->getCapacity() - 1; b>=array_b_max - array_b_quantity; b--) {
-
-		//	//	//integer_a
-		//	//	for (int a = auxiliar_array_a->getCapacity() - 1; (a >= array_a_max - array_a_quantity) || carry; a--) {
-		//	//		std::string auxiliar_multiplication;
-		//	//		if (carry && (*auxiliar_array_a)[a]) {
-		//	//			long long cast_a = (long long) *(*auxiliar_array_a)[a];
-		//	//			long long cast_b = (long long) *(*auxiliar_array_b)[b];
-		//	//			long long multiplication = cast_a * cast_b + carry;
-		//	//			auxiliar_multiplication = (std::to_string(multiplication));
-		//	//			carry = 0;
-		//	//			if (auxiliar_multiplication.length() > MAX_DIGITS) {
-		//	//				carry = atoi(auxiliar_multiplication.substr(0, auxiliar_multiplication.length() - MAX_DIGITS).c_str());
-		//	//				auxiliar_multiplication = auxiliar_multiplication.substr(auxiliar_multiplication.length() - MAX_DIGITS, auxiliar_multiplication.length());
-		//	//			}
-		//	//			if (multiplication_array == nullptr) {
-		//	//				multiplication_array = new Array;
-		//	//				multiplication_array->add(new int(std::stoi(auxiliar_multiplication)));
-		//	//				prepend(multiplication_array, integer_multiplication->integer);
-		//	//			}
-		//	//			else {
-
-		//	//				integer_multiplication->add_digits(std::stoi(auxiliar_multiplication));
-
-		//	//			}
-		//	//		}
-		//	//		else {
-		//	//			if ((*auxiliar_array_b)[a]) {
-		//	//				long long cast_a = (long long) *(*auxiliar_array_a)[a];
-		//	//				long long cast_b = (long long) *(*auxiliar_array_b)[b];
-		//	//				long long multiplication = cast_a * cast_b + carry;
-		//	//				auxiliar_multiplication = (std::to_string(multiplication));
-		//	//				carry = 0;
-
-		//	//				if (auxiliar_multiplication.length() > MAX_DIGITS) {
-		//	//					carry = atoi(auxiliar_multiplication.substr(0, auxiliar_multiplication.length() - MAX_DIGITS).c_str());
-		//	//					auxiliar_multiplication = auxiliar_multiplication.substr(auxiliar_multiplication.length() - MAX_DIGITS, auxiliar_multiplication.length());
-		//	//				}
-
-
-		//	//				if (multiplication_array == nullptr) {
-		//	//					multiplication_array = new Array;
-		//	//					multiplication_array->add(new int(std::stoi(auxiliar_multiplication)));
-		//	//					prepend(multiplication_array, integer_multiplication->integer);
-		//	//				}
-		//	//				else {
-
-		//	//					integer_multiplication->add_digits(std::stoi(auxiliar_multiplication));
-
-		//	//				}
-		//	//			}
-		//	//			else {
-		//	//				if (carry) {
-
-		//	//					auxiliar_multiplication = ((*auxiliar_array_a)[a] ? (std::to_string(*(*auxiliar_array_a)[a] + carry)) : std::to_string(carry));
-		//	//					carry = 0;
-		//	//					if (auxiliar_multiplication.length() > MAX_DIGITS) {
-		//	//						carry = (int)auxiliar_multiplication[0] - '0';
-		//	//						auxiliar_multiplication = auxiliar_multiplication.substr(1, auxiliar_multiplication.length() - 1);
-		//	//					}
-		//	//					integer_multiplication->add_digits(stoi(auxiliar_multiplication));
-		//	//				}
-		//	//				else {
-		//	//					integer_multiplication->add_digits(*(*auxiliar_array_a)[a]);
-		//	//				}
-		//	//			}
-
-		//	//		}
-		//	//	}
-		//	//}
-		//	list_integer_a = list_integer_a->get_previous();
-		//	list_integer_b = list_integer_b->get_previous();
-
-		//}
-
-
 		return *integer_multiplication;
-
 	}
 	catch (int) {
-		// At least one of the Integer is empty
+
 	}
-
-	//int size_a = elements(this->integer);
-	//int size_b = elements(integer_b.getInteger());
-
-	//try {
-	//	if (size_a == 0 || size_b == 0) {
-	//		throw 0;
-	//	}
-
-	//	Array* auxiliar_array_a = nullptr;
-	//	Array* auxiliar_array_b = nullptr;
-	//	NodoDoble<Array>* list_integer_a = nullptr;
-	//	NodoDoble<Array>* list_integer_b = nullptr;
-
-	//	if (*this > integer_b) {
-	//		// this
-	//		list_integer_a = last(this->integer);
-
-	//		// integer_b
-	//		list_integer_b = last(integer_b.integer);
-	//	}
-	//	else {
-	//		// this
-	//		list_integer_b = last(this->integer);
-
-	//		// integer_b
-	//		list_integer_a = last(integer_b.integer);
-	//	}
-
-
-
-	//	// New Integer
-	//	// *this + integer_b
-	//	Array* multiplication_array = nullptr;
-	//	Integer* integer_multiplication = new Integer();
-
-	//	int carry = 0;
-
-	//	int array_a_max = 0;
-	//	int array_b_max = 0;
-	//	int array_a_quantity = 0;
-	//	int array_b_quantity = 0;
-	//	/*
-	//	Lists
-	//	*/
-	//	while (list_integer_a != nullptr && list_integer_b != nullptr) {
-
-	//		/*
-	//		Arrays
-	//		*/
-	//		auxiliar_array_a = list_integer_a->get_data();
-	//		auxiliar_array_b = list_integer_b->get_data();
-	//		array_a_max = auxiliar_array_a->getCapacity();
-	//		array_a_quantity = auxiliar_array_a->getQuantity();
-	//		array_b_max = auxiliar_array_b->getCapacity();
-	//		array_b_quantity = auxiliar_array_b->getQuantity();
-	//		int b = auxiliar_array_b->getCapacity() - 1;
-	//		for (int a = auxiliar_array_a->getCapacity() - 1; (a >= array_a_max - array_a_quantity) || carry; a--) { //Si hay acarreo no puede detenerse la suma
-
-	//			std::string auxiliar_multiplication;
-	//			if ((*auxiliar_array_b)[b]) {
-	//				long long cast_a = (long long) *(*auxiliar_array_a)[a];
-	//				long long cast_b = (long long) *(*auxiliar_array_b)[b];
-	//				long long multiplication = cast_a * cast_b + carry;
-	//				auxiliar_multiplication = (std::to_string(multiplication));
-	//				carry = 0;
-
-	//				if (auxiliar_multiplication.length() > MAX_DIGITS) { 
-	//					carry = atoi(auxiliar_multiplication.substr(0, auxiliar_multiplication.length() - MAX_DIGITS).c_str());
-	//					auxiliar_multiplication = auxiliar_multiplication.substr(auxiliar_multiplication.length() - MAX_DIGITS, auxiliar_multiplication.length());
-	//				}
-
-
-	//				if (multiplication_array == nullptr) {
-	//					multiplication_array = new Array;
-	//					multiplication_array->add(new int(std::stoi(auxiliar_multiplication)));
-	//					prepend(multiplication_array, integer_multiplication->integer);
-	//				}
-	//				else {
-
-	//					integer_multiplication->add_digits(std::stoi(auxiliar_multiplication));
-
-	//				}
-	//			}
-	//			else {
-	//				if (carry) {
-
-	//					auxiliar_multiplication = ((*auxiliar_array_a)[a] ? (std::to_string(*(*auxiliar_array_a)[a] + carry)) : std::to_string(carry));
-	//					carry = 0;
-	//					if (auxiliar_multiplication.length() > MAX_DIGITS) {
-	//						carry = (int)auxiliar_multiplication[0] - '0';
-	//						auxiliar_multiplication = auxiliar_multiplication.substr(1, auxiliar_multiplication.length() - 1);
-	//					}
-	//					integer_multiplication->add_digits(stoi(auxiliar_multiplication));
-	//				}
-	//				else {
-	//					integer_multiplication->add_digits(*(*auxiliar_array_a)[a]);
-	//				}
-	//				//return *integer_addition;
-	//			}
-
-
-	//			b--;
-
-
-	//		}
-
-	//		list_integer_a = list_integer_a->get_previous();
-	//		list_integer_b = list_integer_b->get_previous();
-
-	//	}
-
-
-	//	return *integer_multiplication;
-
-	//}
-	//catch (int) {
-	//	// At least one of the Integer is empty
-	//}
-
 }
+//Integer& Integer::operator*(const Integer& integer_b)
+//{
+//	bool add_carry = false;
+//	bool prev = false;
+//	int zeros = 1;
+//	//int size_a = elements(this->integer);
+//	//int size_b = elements(integer_b.getInteger());
+//
+//	//try {
+//	//	if (size_a == 0 || size_b == 0) {
+//	//		throw 0;
+//	//	}
+//
+//	//	Array* auxiliar_array_a = nullptr;
+//	//	Array* auxiliar_array_b = nullptr;
+//	//	NodoDoble<Array>* list_integer_a = nullptr;
+//	//	NodoDoble<Array>* list_integer_b = nullptr;
+//
+//	//	if (*this > integer_b) {
+//	//		// this
+//	//		list_integer_a = last(this->integer);
+//
+//	//		// integer_b
+//	//		list_integer_b = last(integer_b.integer);
+//	//	}
+//	//	else {
+//	//		// this
+//	//		list_integer_b = last(this->integer);
+//
+//	//		// integer_b
+//	//		list_integer_a = last(integer_b.integer);
+//	//	}
+//
+//
+//
+//	//	// New Integer
+//	//	// *this + integer_b
+//	//	Array* multiplication_array = nullptr;
+//	//	Integer* integer_multiplication = new Integer();
+//
+//	//	int carry = 0;
+//
+//
+//	//	while (list_integer_a != nullptr &&  list_integer_b != nullptr) {
+//
+//	//		auxiliar_array_b = list_integer_b->get_data();
+//
+//	//		//integer_b, cell b
+//	//		for (int b = auxiliar_array_b->getCapacity() - auxiliar_array_b->getQuantity(); b >= 0; b--) {
+//
+//	//			int digit = ((*auxiliar_array_a)[b] ? (*(*auxiliar_array_a)[b]) % 10 : throw 0);
+//
+//
+//
+//	//		}
+//
+//	//	}
+//
+//
+//	//}
+//	//catch (int) {
+//	//	// At least one of the Integer is empty
+//	//}
+//
+//	//int size_a = elements(this->integer);
+//	//int size_b = elements(integer_b.getInteger());
+//
+//	//try {
+//	//	if (size_a == 0 || size_b == 0) {
+//	//		throw 0;
+//	//	}
+//
+//	//	Array* auxiliar_array_a = nullptr;
+//	//	Array* auxiliar_array_b = nullptr;
+//	//	NodoDoble<Array>* list_integer_a = nullptr;
+//	//	NodoDoble<Array>* list_integer_b = nullptr;
+//
+//	//	if (*this > integer_b) {
+//	//		// this
+//	//		list_integer_a = last(this->integer);
+//
+//	//		// integer_b
+//	//		list_integer_b = last(integer_b.integer);
+//	//	}
+//	//	else {
+//	//		// this
+//	//		list_integer_b = last(this->integer);
+//
+//	//		// integer_b
+//	//		list_integer_a = last(integer_b.integer);
+//	//	}
+//
+//	int size_a = elements(this->integer);
+//	int size_b = elements(integer_b.getInteger());
+//	try {
+//		if (size_a == 0 || size_b == 0) {
+//			throw 0;
+//		}
+//
+//		if (*this == ZERO || integer_b == ZERO) {
+//			return (*new Integer(ZERO));
+//		}
+//
+//		Array* auxiliar_array_a = nullptr;
+//		Array* auxiliar_array_b = nullptr;
+//		NodoDoble<Array>* list_integer_a = nullptr;
+//		NodoDoble<Array>* list_integer_a_aux = nullptr;
+//		NodoDoble<Array>* list_integer_b = nullptr;
+//		if (*this > integer_b) {
+//			// this
+//			list_integer_a = last(this->integer);
+//
+//			// integer_b
+//			list_integer_b = last(integer_b.integer);
+//		}
+//		else {
+//			// this
+//			list_integer_b = last(this->integer);
+//
+//			// integer_b
+//			list_integer_a = last(integer_b.integer);
+//		}
+//
+//		// New Integer
+//		// *this * integer_b
+//		Array* multiplication_array = nullptr;
+//		Integer* integer_multiplication = new Integer();
+//
+//		//The addition auxiliar array
+//
+//		Integer addition_aux;
+//
+//		int carry = 0;
+//		int shift = 0;
+//
+//		/*
+//		Lists
+//		*/
+//		// integer_b
+//		int b_digit = 0;
+//		while (list_integer_b != nullptr) {
+//			auxiliar_array_b = list_integer_b->get_data();
+//			for (int b = auxiliar_array_b->getCapacity() - 1; b >= auxiliar_array_b->f_index(); b--) { // B array
+//				int num = *(*auxiliar_array_b)[b];
+//				int pw = 0;
+//				while (num > 0) {
+//					b_digit = num % 10;
+//					num /= 10;
+//
+//					//Add the shifts
+//					std::string shift_len(shift,'0');
+//					
+//					list_integer_a_aux = list_integer_a;
+//					while (list_integer_a_aux) { // integer_a
+//						auxiliar_array_a = list_integer_a_aux->get_data();
+//						for (int a = auxiliar_array_a->getCapacity() - 1; a >= auxiliar_array_a->f_index() || carry; a--) { // A array
+//							long long cast_mult = 0;
+//							if (!(*auxiliar_array_a)[a] && carry) {
+//								cast_mult = carry;
+//								carry = 0;
+//							}
+//							else {
+//
+//
+//								cast_mult = (long long)b_digit * (long long) * (*auxiliar_array_a)[a] + carry;
+//								carry = 0;
+//								if (digits_primitive(cast_mult) < MAX_DIGITS && ((*auxiliar_array_a)[a - 1] || (list_integer_a_aux->get_previous()))) {
+//									zeros = pow(10, MAX_DIGITS - digits_primitive(cast_mult));
+//								}
+//								if (std::to_string(cast_mult).length() > MAX_DIGITS) { //Carry
+//									int pw = pow(10, (digits_primitive(cast_mult) - 1));
+//									carry = cast_mult / pw;
+//									//cast_mult = std::stoll(std::to_string(cast_mult).substr(1, std::to_string(cast_mult).length()));
+//									long long aa = 1;
+//									long long aux_cast = cast_mult;
+//									cast_mult = 0;
+//									while (aa < pw) {
+//										cast_mult += (aux_cast % 10) * aa;
+//										aux_cast /= 10;
+//										aa *= 10;
+//									}
+//									if (digits_primitive(cast_mult) < MAX_DIGITS && carry) {
+//										add_carry = true;
+//									}
+//								}
+//
+//							}
+//
+//							//addition_aux = parse("9" + shift_len);
+//
+//							if (add_carry && prev) {
+//								addition_aux.add_digits(cast_mult);
+//								add_carry = false;
+//								prev = false;
+//							}
+//							else if (cast_mult == 0) {
+//								shift_len += std::string(MAX_DIGITS, '0');
+//							}
+//							else if (!shift_len.empty()) {
+//								int find_not_zero = cast_mult;
+//								while (find_not_zero % 10 == 0) {
+//									shift_len += "0";
+//									find_not_zero /= 10;
+//								}
+//								cast_mult = find_not_zero;
+//								shift_len = std::to_string(cast_mult % 10) + shift_len;
+//								addition_aux = parse(shift_len);
+//								cast_mult /= 10;
+//								shift_len = "";
+//								addition_aux.add_one_by_one(cast_mult);
+//							}
+//							else if (b_digit == 0 && (*auxiliar_array_a)[a]) {
+//								addition_aux.add_digits(cast_mult);
+//							}
+//							else {
+//								addition_aux.add_one_by_one(cast_mult);
+//							}
+//
+//							if (add_carry && !prev) {
+//								prev = true;
+//							}
+//
+//
+//						}
+//						list_integer_a_aux = list_integer_a_aux->get_previous();
+//					}
+//					std::cout << "\nNumero: " << addition_aux;
+//					if (!integer_multiplication->integer) {
+//						*integer_multiplication = addition_aux;
+//					}
+//					else {
+//						*integer_multiplication += addition_aux;
+//					}
+//					addition_aux.clear_integer();
+//					std::cout << "\nSumatoria: " << *integer_multiplication;
+//
+//					shift++;
+//				}
+//				//int w = pow(10, auxiliar_array_b->getCapacity() - (b + 1));
+//				//b_digit = (*(*auxiliar_array_b)[b] / w) % (10 * auxiliar_array_b->getCapacity() - b);
+//
+//			
+//			}
+//
+//			list_integer_b = list_integer_b->get_previous();
+//		}
+//
+//		//while (list_integer_a != nullptr && list_integer_b != nullptr) {
+//
+//		//	/*
+//		//	Arrays
+//		//	*/
+//		//	auxiliar_array_a = list_integer_a->get_data();
+//		//	auxiliar_array_b = list_integer_b->get_data();
+//		//	array_a_max = auxiliar_array_a->getCapacity();
+//		//	array_a_quantity = auxiliar_array_a->getQuantity();
+//		//	array_b_max = auxiliar_array_b->getCapacity();
+//		//	array_b_quantity = auxiliar_array_b->getQuantity();
+//		//	//---
+//
+//
+//
+//
+//		//	//int b = auxiliar_array_b->getCapacity() - 1;
+//		//	
+//		//	////integer_b
+//		//	//for (int b = auxiliar_array_b->getCapacity() - 1; b>=array_b_max - array_b_quantity; b--) {
+//
+//		//	//	//integer_a
+//		//	//	for (int a = auxiliar_array_a->getCapacity() - 1; (a >= array_a_max - array_a_quantity) || carry; a--) {
+//		//	//		std::string auxiliar_multiplication;
+//		//	//		if (carry && (*auxiliar_array_a)[a]) {
+//		//	//			long long cast_a = (long long) *(*auxiliar_array_a)[a];
+//		//	//			long long cast_b = (long long) *(*auxiliar_array_b)[b];
+//		//	//			long long multiplication = cast_a * cast_b + carry;
+//		//	//			auxiliar_multiplication = (std::to_string(multiplication));
+//		//	//			carry = 0;
+//		//	//			if (auxiliar_multiplication.length() > MAX_DIGITS) {
+//		//	//				carry = atoi(auxiliar_multiplication.substr(0, auxiliar_multiplication.length() - MAX_DIGITS).c_str());
+//		//	//				auxiliar_multiplication = auxiliar_multiplication.substr(auxiliar_multiplication.length() - MAX_DIGITS, auxiliar_multiplication.length());
+//		//	//			}
+//		//	//			if (multiplication_array == nullptr) {
+//		//	//				multiplication_array = new Array;
+//		//	//				multiplication_array->add(new int(std::stoi(auxiliar_multiplication)));
+//		//	//				prepend(multiplication_array, integer_multiplication->integer);
+//		//	//			}
+//		//	//			else {
+//
+//		//	//				integer_multiplication->add_digits(std::stoi(auxiliar_multiplication));
+//
+//		//	//			}
+//		//	//		}
+//		//	//		else {
+//		//	//			if ((*auxiliar_array_b)[a]) {
+//		//	//				long long cast_a = (long long) *(*auxiliar_array_a)[a];
+//		//	//				long long cast_b = (long long) *(*auxiliar_array_b)[b];
+//		//	//				long long multiplication = cast_a * cast_b + carry;
+//		//	//				auxiliar_multiplication = (std::to_string(multiplication));
+//		//	//				carry = 0;
+//
+//		//	//				if (auxiliar_multiplication.length() > MAX_DIGITS) {
+//		//	//					carry = atoi(auxiliar_multiplication.substr(0, auxiliar_multiplication.length() - MAX_DIGITS).c_str());
+//		//	//					auxiliar_multiplication = auxiliar_multiplication.substr(auxiliar_multiplication.length() - MAX_DIGITS, auxiliar_multiplication.length());
+//		//	//				}
+//
+//
+//		//	//				if (multiplication_array == nullptr) {
+//		//	//					multiplication_array = new Array;
+//		//	//					multiplication_array->add(new int(std::stoi(auxiliar_multiplication)));
+//		//	//					prepend(multiplication_array, integer_multiplication->integer);
+//		//	//				}
+//		//	//				else {
+//
+//		//	//					integer_multiplication->add_digits(std::stoi(auxiliar_multiplication));
+//
+//		//	//				}
+//		//	//			}
+//		//	//			else {
+//		//	//				if (carry) {
+//
+//		//	//					auxiliar_multiplication = ((*auxiliar_array_a)[a] ? (std::to_string(*(*auxiliar_array_a)[a] + carry)) : std::to_string(carry));
+//		//	//					carry = 0;
+//		//	//					if (auxiliar_multiplication.length() > MAX_DIGITS) {
+//		//	//						carry = (int)auxiliar_multiplication[0] - '0';
+//		//	//						auxiliar_multiplication = auxiliar_multiplication.substr(1, auxiliar_multiplication.length() - 1);
+//		//	//					}
+//		//	//					integer_multiplication->add_digits(stoi(auxiliar_multiplication));
+//		//	//				}
+//		//	//				else {
+//		//	//					integer_multiplication->add_digits(*(*auxiliar_array_a)[a]);
+//		//	//				}
+//		//	//			}
+//
+//		//	//		}
+//		//	//	}
+//		//	//}
+//		//	list_integer_a = list_integer_a->get_previous();
+//		//	list_integer_b = list_integer_b->get_previous();
+//
+//		//}
+//
+//
+//		return *integer_multiplication;
+//
+//	}
+//	catch (int) {
+//		// At least one of the Integer is empty
+//	}
+//
+//	//int size_a = elements(this->integer);
+//	//int size_b = elements(integer_b.getInteger());
+//
+//	//try {
+//	//	if (size_a == 0 || size_b == 0) {
+//	//		throw 0;
+//	//	}
+//
+//	//	Array* auxiliar_array_a = nullptr;
+//	//	Array* auxiliar_array_b = nullptr;
+//	//	NodoDoble<Array>* list_integer_a = nullptr;
+//	//	NodoDoble<Array>* list_integer_b = nullptr;
+//
+//	//	if (*this > integer_b) {
+//	//		// this
+//	//		list_integer_a = last(this->integer);
+//
+//	//		// integer_b
+//	//		list_integer_b = last(integer_b.integer);
+//	//	}
+//	//	else {
+//	//		// this
+//	//		list_integer_b = last(this->integer);
+//
+//	//		// integer_b
+//	//		list_integer_a = last(integer_b.integer);
+//	//	}
+//
+//
+//
+//	//	// New Integer
+//	//	// *this + integer_b
+//	//	Array* multiplication_array = nullptr;
+//	//	Integer* integer_multiplication = new Integer();
+//
+//	//	int carry = 0;
+//
+//	//	int array_a_max = 0;
+//	//	int array_b_max = 0;
+//	//	int array_a_quantity = 0;
+//	//	int array_b_quantity = 0;
+//	//	/*
+//	//	Lists
+//	//	*/
+//	//	while (list_integer_a != nullptr && list_integer_b != nullptr) {
+//
+//	//		/*
+//	//		Arrays
+//	//		*/
+//	//		auxiliar_array_a = list_integer_a->get_data();
+//	//		auxiliar_array_b = list_integer_b->get_data();
+//	//		array_a_max = auxiliar_array_a->getCapacity();
+//	//		array_a_quantity = auxiliar_array_a->getQuantity();
+//	//		array_b_max = auxiliar_array_b->getCapacity();
+//	//		array_b_quantity = auxiliar_array_b->getQuantity();
+//	//		int b = auxiliar_array_b->getCapacity() - 1;
+//	//		for (int a = auxiliar_array_a->getCapacity() - 1; (a >= array_a_max - array_a_quantity) || carry; a--) { //Si hay acarreo no puede detenerse la suma
+//
+//	//			std::string auxiliar_multiplication;
+//	//			if ((*auxiliar_array_b)[b]) {
+//	//				long long cast_a = (long long) *(*auxiliar_array_a)[a];
+//	//				long long cast_b = (long long) *(*auxiliar_array_b)[b];
+//	//				long long multiplication = cast_a * cast_b + carry;
+//	//				auxiliar_multiplication = (std::to_string(multiplication));
+//	//				carry = 0;
+//
+//	//				if (auxiliar_multiplication.length() > MAX_DIGITS) { 
+//	//					carry = atoi(auxiliar_multiplication.substr(0, auxiliar_multiplication.length() - MAX_DIGITS).c_str());
+//	//					auxiliar_multiplication = auxiliar_multiplication.substr(auxiliar_multiplication.length() - MAX_DIGITS, auxiliar_multiplication.length());
+//	//				}
+//
+//
+//	//				if (multiplication_array == nullptr) {
+//	//					multiplication_array = new Array;
+//	//					multiplication_array->add(new int(std::stoi(auxiliar_multiplication)));
+//	//					prepend(multiplication_array, integer_multiplication->integer);
+//	//				}
+//	//				else {
+//
+//	//					integer_multiplication->add_digits(std::stoi(auxiliar_multiplication));
+//
+//	//				}
+//	//			}
+//	//			else {
+//	//				if (carry) {
+//
+//	//					auxiliar_multiplication = ((*auxiliar_array_a)[a] ? (std::to_string(*(*auxiliar_array_a)[a] + carry)) : std::to_string(carry));
+//	//					carry = 0;
+//	//					if (auxiliar_multiplication.length() > MAX_DIGITS) {
+//	//						carry = (int)auxiliar_multiplication[0] - '0';
+//	//						auxiliar_multiplication = auxiliar_multiplication.substr(1, auxiliar_multiplication.length() - 1);
+//	//					}
+//	//					integer_multiplication->add_digits(stoi(auxiliar_multiplication));
+//	//				}
+//	//				else {
+//	//					integer_multiplication->add_digits(*(*auxiliar_array_a)[a]);
+//	//				}
+//	//				//return *integer_addition;
+//	//			}
+//
+//
+//	//			b--;
+//
+//
+//	//		}
+//
+//	//		list_integer_a = list_integer_a->get_previous();
+//	//		list_integer_b = list_integer_b->get_previous();
+//
+//	//	}
+//
+//
+//	//	return *integer_multiplication;
+//
+//	//}
+//	//catch (int) {
+//	//	// At least one of the Integer is empty
+//	//}
+//
+//}
 Integer& Integer::operator--(int)
 {
 	Integer* older = new Integer(*this);
@@ -1168,10 +1311,10 @@ bool Integer::operator>(const Integer& integer_b) {
 		else if (size_a < size_b) {
 			return false;
 		}
-		else if (this->cantidadDigitos() > integer_b.cantidadDigitos()) {
+		else if (this->digits() > integer_b.digits()) {
 			return true;
 		}
-		else if (this->cantidadDigitos() < integer_b.cantidadDigitos()) {
+		else if (this->digits() < integer_b.digits()) {
 			return false;
 		}
 		else {
@@ -1238,7 +1381,7 @@ bool Integer::operator==(const Integer& integer_b)
 		if (size_a < size_b || size_a > size_b) {
 			return false;
 		}
-		else if (this->cantidadDigitos() > integer_b.cantidadDigitos() || this->cantidadDigitos() < integer_b.cantidadDigitos()) {
+		else if (this->digits() > integer_b.digits() || this->digits() < integer_b.digits()) {
 			return false;
 		}
 		else {
@@ -1294,7 +1437,7 @@ bool Integer::operator==(const Integer& integer_b) const
 		if (size_a < size_b || size_a > size_b) {
 			return false;
 		}
-		else if (this->cantidadDigitos() > integer_b.cantidadDigitos() || this->cantidadDigitos() < integer_b.cantidadDigitos()) {
+		else if (this->digits() > integer_b.digits() || this->digits() < integer_b.digits()) {
 			return false;
 		}
 		else {
@@ -1349,6 +1492,23 @@ bool Integer::is_negative() const
 	return (*(*(*this->integer)->get_data())[(*this->integer)->get_data()->f_index()] < 0 || (*(*(*this->integer)->get_data())[(*this->integer)->get_data()->f_index()] == 0 && ((*this->integer)->get_next() != nullptr || (*this->integer)->get_data()->f_index() < MAX_TAM - 1)));
 }
 
+int Integer::digits_primitive(long long n)
+{
+	int counter = 1;
+	long long auxiliar = n;
+	while (auxiliar >= 10) {
+		auxiliar /= 10;
+		counter++;
+	}
+	return counter;
+}
+
+void Integer::add_with_carry(int digit)
+{
+	add_one_by_one(digit);
+	(*this->integer)->get_data()->reduceSize();
+}
+
 bool Integer::operator!=(const Integer& integer_b)
 {
 	return !(*this == integer_b);
@@ -1392,7 +1552,7 @@ bool Integer::operator<(const Integer& integer_b)
 		else if (size_a > size_b) {
 			return false;
 		}
-		else if (this->cantidadDigitos() > integer_b.cantidadDigitos()) {
+		else if (this->digits() > integer_b.digits()) {
 			return true;
 		}
 		else {

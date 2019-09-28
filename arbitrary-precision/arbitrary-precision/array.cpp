@@ -163,6 +163,11 @@ int Array::f_index()
 	return this->getCapacity() - this->getQuantity();
 }
 
+void Array::reduceSize()
+{
+	size--;
+}
+
 std::ostream& operator<<(std::ostream& output, const Array& arr)
 {
 	//for (int i = 0; i < arr.getCapacity(); i++) {

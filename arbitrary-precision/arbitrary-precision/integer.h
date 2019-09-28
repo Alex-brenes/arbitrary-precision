@@ -18,7 +18,7 @@ private:
 
 	NodoDoble<Array>** integer;
 	void add_digits(int);
-	int cantidadDigitos() const;
+	int digits() const;
 	NodoDoble<Array>** getInteger() const;
 	void add_one_by_one(int);
 	void add_one_digit(int);
@@ -27,6 +27,8 @@ private:
 	bool operator==(const Integer&) const;
 	bool is_positive() const;
 	bool is_negative() const;
+	int digits_primitive(long long);
+	void add_with_carry(int);
 public:
 	static const Integer ONE;
 	static const Integer ZERO;
