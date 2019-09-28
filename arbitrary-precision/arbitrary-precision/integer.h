@@ -15,8 +15,7 @@
 class Integer {
 
 private:
-	static const Integer ONE;
-	static const Integer ZERO;
+
 	NodoDoble<Array>** integer;
 	void add_digits(int);
 	int cantidadDigitos() const;
@@ -26,6 +25,8 @@ private:
 	void add_shift();
 	void clear_integer();
 public:
+	static const Integer ONE;
+	static const Integer ZERO;
 	Integer();
 	Integer(const Integer&);
 	Integer(int);

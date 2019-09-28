@@ -60,6 +60,9 @@ bool Array::add(int* val)
 {
 	//End
 	if (size >= 0) {
+		if (size + 1 < MAX_TAM) {
+			//std::cout << "\n" << *_arr[size + 1];
+		}
 		if (this->getQuantity() == 0) {
 			_arr[size--] = val;
 		}
@@ -87,9 +90,24 @@ bool Array::add(int* val)
 	
 }
 
+bool Array::add_one_by_one(int& val)
+{
+	int i = this->countDigits(size + 1);
+	while (i < MAX_DIGITS) {
+		add_shifted(new int(val % 10));
+		val /= 10;
+		if (val <= 0 && i <= MAX_DIGITS) {
+			return true;
+		}
+		i++;
+	}
+	return false;
+}
+
 bool Array::add_shifted(int* val)
 {
-	if (std::to_string(*_arr[size + 1]).length() < 9) {
+	if (std::to_string(*_arr[size + 1]).length() < MAX_DIGITS) {
+		//std::cout << "\n" << *_arr[size + 1];
 		_arr[size + 1] = new int(atoi((std::to_string(*val) + std::to_string(*_arr[size + 1])).c_str()));
 		return true;
 	}

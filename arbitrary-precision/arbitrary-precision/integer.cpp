@@ -28,9 +28,20 @@ int Integer::cantidadDigitos() const {
 	Array* arr = (*this->integer)->get_data();
 	int digits = (elements(this->integer) - 1) * (MAX_DIGITS * arr->getQuantity());
 	int aux = 0;
-	for (int i = arr->getCapacity() - arr->getQuantity(); i < arr->getCapacity(); i++) {
-		aux += arr->countDigits(i);
+	int digits_arr_cell = 0;
+	NodoDoble<Array>* aux_list = (*this->integer);
+	while (aux_list) {
+		arr = aux_list->get_data();
+		for (int i = arr->getCapacity() - arr->getQuantity(); i < arr->getCapacity(); i++) {
+			digits_arr_cell = arr->countDigits(i);
+			if (digits_arr_cell < MAX_DIGITS && ((*arr)[i - 1] || aux_list->get_previous())) {
+				digits_arr_cell += (MAX_DIGITS - digits_arr_cell);
+			}
+			aux += digits_arr_cell;
+		}
+		aux_list = aux_list->get_next();
 	}
+
 	return digits + aux;
 }
 
@@ -65,8 +76,19 @@ NodoDoble<Array>** Integer::getInteger() const {
 void Integer::add_one_by_one(int n)
 {
 	while (n > 0) {
-		add_one_digit(n % 10);
-		n /= 10;
+		if (n % 10 == 0) {
+			int i = 0;
+			while (n % 10 == 0) {
+				i++;
+				n /= 10;
+			}
+			add_one_digit((n%10) * pow(10, i));
+			n /= 10;
+		}
+		else {
+			add_one_digit(n % 10);
+			n /= 10;
+		}
 	}
 }
 
@@ -76,8 +98,13 @@ void Integer::add_one_digit(int z) {
 
 		Array* aux = (*this->integer)->get_data();
 
-		if (aux->countDigits(aux->f_index()) < MAX_DIGITS) {
+		if (aux->countDigits(aux->f_index()) < MAX_DIGITS && (std::to_string(z).length() + aux->countDigits(aux->f_index()) <= MAX_DIGITS)) {
 			aux->add_shifted(new int(z));
+		}
+		else if(std::to_string(z).length() + aux->countDigits(aux->f_index()) > MAX_DIGITS){
+			if (!aux->add_one_by_one(z)) {
+				this->add_digits(z);
+			}
 		}
 		else {
 			this->add_digits(z);
@@ -226,6 +253,10 @@ Integer& Integer::operator+(const Integer& integer_b)
 		/*
 		Lists
 		*/
+
+	/*	std::cout << "\n\n\t\t\t" << *this << "+\n";
+		std::cout << "\n\n\t\t\t" << integer_b << "\n-------------------------------------\n";*/
+
 		while (list_integer_a != nullptr && list_integer_b != nullptr) {
 			
 			/*
@@ -784,12 +815,8 @@ Integer& Integer::operator*(const Integer& integer_b)
 					num /= 10;
 
 					//Add the shifts
-					int i = shift;
-					while (i > 0) {
-						addition_aux.add_shift();
-						i--;
-					}
-
+					std::string shift_len(shift,'0');
+					
 					list_integer_a_aux = list_integer_a;
 					while (list_integer_a_aux) { // integer_a
 						auxiliar_array_a = list_integer_a_aux->get_data();
@@ -824,12 +851,14 @@ Integer& Integer::operator*(const Integer& integer_b)
 									//prepend(multiplication_array, integer_multiplication->integer);
 								}
 							}
+							if (!shift_len.empty()) {
+								shift_len = std::to_string(cast_mult % 10) + shift_len;
+								addition_aux = parse(shift_len);
+								cast_mult /= 10;
+								shift_len = "";
+							}
 							if (b_digit == 0 && (*auxiliar_array_a)[a]) {
-								int qtty_z = *(*auxiliar_array_a)[a];
-								while (qtty_z > 0) {
-									addition_aux.add_shift();
-									qtty_z /= 10;
-								}
+								addition_aux.add_digits(cast_mult);
 							}
 							else {
 								addition_aux.add_one_by_one(cast_mult);
@@ -837,7 +866,7 @@ Integer& Integer::operator*(const Integer& integer_b)
 						}
 						list_integer_a_aux = list_integer_a_aux->get_previous();
 					}
-					std::cout << "\n" << addition_aux;
+					std::cout << "\nNumero: " << addition_aux;
 					if (!integer_multiplication->integer) {
 						*integer_multiplication = addition_aux;
 					}
@@ -845,6 +874,7 @@ Integer& Integer::operator*(const Integer& integer_b)
 						*integer_multiplication += addition_aux;
 					}
 					addition_aux.clear_integer();
+					std::cout << "\nSumatoria: " << *integer_multiplication;
 
 					shift++;
 				}

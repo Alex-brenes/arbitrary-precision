@@ -21,6 +21,7 @@ public:
 	int getQuantity() const;
 	int countDigits(int) const;
 	bool add(int*);
+	bool add_one_by_one(int&);
 	bool add_shifted(int*);
 	bool interchange(int*, int);
 	~Array();
