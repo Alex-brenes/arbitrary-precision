@@ -1122,6 +1122,28 @@ Integer& Integer::operator*(const Integer& integer_b)
 	//}
 
 }
+Integer& Integer::operator--(int)
+{
+	Integer* older = new Integer(*this);
+	(*this) -= ONE;
+	return *older;
+}
+Integer& Integer::operator--()
+{
+	(*this) -= ONE;
+	return (*this);
+}
+Integer& Integer::operator++(int)
+{
+	Integer* older = new Integer(*this);
+	(*this) += ONE;
+	return *older;
+}
+Integer& Integer::operator++()
+{
+	(*this) += ONE;
+	return (*this);
+}
 bool Integer::operator>(const Integer& integer_b) {
 
 	int size_a = elements(this->integer);
@@ -1131,6 +1153,15 @@ bool Integer::operator>(const Integer& integer_b) {
 		if (size_a == 0 || size_b == 0) {
 			throw 0;
 		}
+
+		if (this->is_positive() && integer_b.is_negative()) {
+			return true;
+		}
+		else if (this->is_negative() && integer_b.is_positive()) {
+			return false;
+		}
+
+
 		if (size_a > size_b) {
 			return true;
 		}
@@ -1307,6 +1338,17 @@ bool Integer::operator==(const Integer& integer_b) const
 	}
 }
 
+
+bool Integer::is_positive() const
+{
+	return (*(*(*this->integer)->get_data())[(*this->integer)->get_data()->f_index()] >= 0 || (*(*(*this->integer)->get_data())[(*this->integer)->get_data()->f_index()] != 0 && ((*this->integer)->get_next() != nullptr || (*this->integer)->get_data()->f_index() < MAX_TAM - 1)));
+}
+
+bool Integer::is_negative() const
+{
+	return (*(*(*this->integer)->get_data())[(*this->integer)->get_data()->f_index()] < 0 || (*(*(*this->integer)->get_data())[(*this->integer)->get_data()->f_index()] == 0 && ((*this->integer)->get_next() != nullptr || (*this->integer)->get_data()->f_index() < MAX_TAM - 1)));
+}
+
 bool Integer::operator!=(const Integer& integer_b)
 {
 	return !(*this == integer_b);
@@ -1329,6 +1371,21 @@ bool Integer::operator<(const Integer& integer_b)
 		if (size_a == 0 || size_b == 0) {
 			throw 0;
 		}
+
+		//if (integer_b == ZERO && (*(*(*this->integer)->get_data())[(*this->integer)->get_data()->f_index()] > 0 || (*(*(*this->integer)->get_data())[(*this->integer)->get_data()->f_index()] == 0 && ((*this->integer)->get_next() != nullptr || (*this->integer)->get_data()->f_index() < MAX_TAM - 1)))) {
+		//	return false;
+		//}
+		//else if (*this == ZERO && (*(*(*integer_b.integer)->get_data())[(*integer_b.integer)->get_data()->f_index()] > 0 || (*(*(*integer_b.integer)->get_data())[(*integer_b.integer)->get_data()->f_index()] == 0 && ((*integer_b.integer)->get_next() != nullptr || (*integer_b.integer)->get_data()->f_index() < MAX_TAM - 1)))) {
+		//	return true;
+		//}
+
+		if (this->is_positive() && integer_b.is_negative()) {
+			return false;
+		}
+		else if (this->is_negative() && integer_b.is_positive()) {
+			return true;
+		}
+
 		if (size_a < size_b) {
 			return true;
 		}

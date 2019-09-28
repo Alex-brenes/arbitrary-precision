@@ -6,11 +6,14 @@ int main() {
 	Integer entero_b;
 	Integer entero_c;
 	Integer entero_d(entero_a);
-	Integer entero_e = Integer::parse("64165498441654");
-	Integer entero_f = Integer::parse("0");
-	//std::cout << std::stoi("0001");
-	
-	std::cout << "\n"<<entero_e * entero_f;
+	Integer entero_e = Integer::parse("1000");
+	Integer entero_f = Integer::parse("1");
+	Integer entero_x = Integer::parse("-111111111");
+	Integer entero_y = Integer::parse("0");
+	//std::cout << entero_y;
+	Integer aux(100);
+
+	std::cout << (entero_x < entero_y ? "true" : "false");
 		return 0;
 }
 

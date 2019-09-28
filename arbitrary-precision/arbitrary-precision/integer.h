@@ -24,6 +24,9 @@ private:
 	void add_one_digit(int);
 	void add_shift(int);
 	void clear_integer();
+	bool operator==(const Integer&) const;
+	bool is_positive() const;
+	bool is_negative() const;
 public:
 	static const Integer ONE;
 	static const Integer ZERO;
@@ -41,12 +44,16 @@ public:
 	Integer& operator-(const Integer&);
 	Integer& operator*(const Integer&);
 	Integer& operator/(const Integer&);
+	Integer& operator--(int);
+	Integer& operator--();
+	Integer& operator++(int);
+	Integer& operator++();
 	bool operator<(const Integer&);
 	bool operator>(const Integer&);
 	bool operator<=(const Integer&);
 	bool operator>=(const Integer&);
 	bool operator==(const Integer&);
-	bool operator==(const Integer&) const;
+
 	bool operator!=(const Integer&);
 	std::string toString();
 	~Integer();
