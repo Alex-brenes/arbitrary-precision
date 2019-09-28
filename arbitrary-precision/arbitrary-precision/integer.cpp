@@ -115,9 +115,9 @@ void Integer::add_one_digit(int z) {
 	}
 }
 
-void Integer::add_shift()
+void Integer::add_shift(int n)
 {
-	this->add_one_digit(0);
+	*this = parse("9" + std::string(n, '0'));
 }
 
 void Integer::clear_integer()
@@ -765,6 +765,10 @@ Integer& Integer::operator*(const Integer& integer_b)
 			throw 0;
 		}
 
+		if (*this == ZERO || integer_b == ZERO) {
+
+		}
+
 		Array* auxiliar_array_a = nullptr;
 		Array* auxiliar_array_b = nullptr;
 		NodoDoble<Array>* list_integer_a = nullptr;
@@ -796,10 +800,7 @@ Integer& Integer::operator*(const Integer& integer_b)
 
 		int carry = 0;
 		int shift = 0;
-		int array_a_max = 0;
-		int array_b_max = 0;
-		int array_a_quantity = 0;
-		int array_b_quantity = 0;
+
 		/*
 		Lists
 		*/
@@ -851,18 +852,30 @@ Integer& Integer::operator*(const Integer& integer_b)
 									//prepend(multiplication_array, integer_multiplication->integer);
 								}
 							}
-							if (!shift_len.empty()) {
-								shift_len = std::to_string(cast_mult % 10) + shift_len;
-								addition_aux = parse(shift_len);
-								cast_mult /= 10;
-								shift_len = "";
-							}
-							if (b_digit == 0 && (*auxiliar_array_a)[a]) {
-								addition_aux.add_digits(cast_mult);
+							if (cast_mult == 0) {
+								shift_len += std::string(MAX_DIGITS, '0');
 							}
 							else {
-								addition_aux.add_one_by_one(cast_mult);
+								if (!shift_len.empty()) {
+									int find_not_zero = cast_mult;
+									while (find_not_zero % 10 == 0) {
+										shift_len += "0";
+										find_not_zero /= 10;
+									}
+									cast_mult = find_not_zero;
+									shift_len = std::to_string(cast_mult % 10) + shift_len;
+									addition_aux = parse(shift_len);
+									cast_mult /= 10;
+									shift_len = "";
+								}
+								if (b_digit == 0 && (*auxiliar_array_a)[a]) {
+									addition_aux.add_digits(cast_mult);
+								}
+								else {
+									addition_aux.add_one_by_one(cast_mult);
+								}
 							}
+							
 						}
 						list_integer_a_aux = list_integer_a_aux->get_previous();
 					}
@@ -1237,6 +1250,61 @@ bool Integer::operator==(const Integer& integer_b)
 		//At least one of the Integer is empty
 	}
 
+}
+
+bool Integer::operator==(const Integer& integer_b) const
+{
+	int size_a = elements(this->integer);
+	int size_b = elements(integer_b.getInteger());
+	try {
+		if (size_a == 0 || size_b == 0) {
+			throw 0;
+		}
+		if (size_a < size_b || size_a > size_b) {
+			return false;
+		}
+		else if (this->cantidadDigitos() > integer_b.cantidadDigitos() || this->cantidadDigitos() < integer_b.cantidadDigitos()) {
+			return false;
+		}
+		else {
+
+			//Misma cantidad de nodos y dígitos
+				/*
+				Se revisa desde el primer nodo y se detiene en el momento en el que
+				uno de los dos dígitos sea mayor al otro.
+				*/
+
+			NodoDoble <Array>* auxiliar_a = *this->integer;
+			NodoDoble <Array>* auxiliar_b = *integer_b.integer;
+
+			Array* auxiliar_arr_a;
+			Array* auxiliar_arr_b;
+
+			while (auxiliar_a != nullptr && auxiliar_b != nullptr) {
+				auxiliar_arr_a = auxiliar_a->get_data();
+				auxiliar_arr_b = auxiliar_b->get_data();
+				int b = auxiliar_arr_b->getCapacity() - auxiliar_arr_b->getQuantity();
+
+				for (int i = auxiliar_arr_a->getCapacity() - auxiliar_arr_a->getQuantity();
+					i < auxiliar_arr_a->getCapacity() && b < auxiliar_arr_b->getCapacity(); i++) {
+					if (*(*auxiliar_arr_a)[i] < *(*auxiliar_arr_b)[b] || *(*auxiliar_arr_a)[i] > * (*auxiliar_arr_b)[b]) {
+						return false;
+					}
+					b++;
+				}
+
+				auxiliar_a = auxiliar_a->get_next();
+				auxiliar_b = auxiliar_b->get_next();
+
+			}
+
+			return true;
+
+		}
+	}
+	catch (int) {
+		//At least one of the Integer is empty
+	}
 }
 
 bool Integer::operator!=(const Integer& integer_b)

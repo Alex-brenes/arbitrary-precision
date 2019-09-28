@@ -22,7 +22,7 @@ private:
 	NodoDoble<Array>** getInteger() const;
 	void add_one_by_one(int);
 	void add_one_digit(int);
-	void add_shift();
+	void add_shift(int);
 	void clear_integer();
 public:
 	static const Integer ONE;
@@ -46,6 +46,7 @@ public:
 	bool operator<=(const Integer&);
 	bool operator>=(const Integer&);
 	bool operator==(const Integer&);
+	bool operator==(const Integer&) const;
 	bool operator!=(const Integer&);
 	std::string toString();
 	~Integer();

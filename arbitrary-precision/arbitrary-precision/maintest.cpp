@@ -7,7 +7,7 @@ int main() {
 	Integer entero_c;
 	Integer entero_d(entero_a);
 	Integer entero_e = Integer::parse("64165498441654");
-	Integer entero_f = Integer::parse("64165498441654");
+	Integer entero_f = Integer::parse("0");
 	//std::cout << std::stoi("0001");
 	
 	std::cout << "\n"<<entero_e * entero_f;
