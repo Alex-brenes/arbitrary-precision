@@ -9,12 +9,12 @@ int main() {
 	Integer entero_d(entero_a);
 	//Integer entero_e = Integer::parse("1307674368000");
 	//Integer entero_f = Integer::parse("16");
-	Integer entero_x = Integer::parse("56");
-	Integer entero_y = Integer::parse("12696403353658275925965100847566516959580321051449436762275840000000000000");
-	std::cout <<"\n"<< entero_x * entero_y;
+	//Integer entero_x = Integer::parse("56");
+	//Integer entero_y = Integer::parse("12696403353658275925965100847566516959580321051449436762275840000000000000");
+	//std::cout <<"\n"<< entero_x * entero_y;
 	//std::cout << entero_a;
-	//Integer aux(60);
-	//std::cout << "\nFactorial: " << factorial(aux);
+	Integer aux(93);
+	std::cout << "\nFactorial: " << factorial(aux);
 	//std::cout << (entero_x < entero_y ? "true" : "false");
 		return 0;
 }
@@ -24,7 +24,7 @@ Integer& factorial(Integer integer) {
 	Integer i(1);
 	while (i <= integer) {
 		std::cout << "\n--------" << i<<"\n";
-		if (i==Integer(56)) {
+		if (i==Integer(93)) {
 			std::cout << "";
 		}
 		*fact *= i;

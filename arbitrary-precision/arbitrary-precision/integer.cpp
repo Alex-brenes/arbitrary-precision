@@ -259,8 +259,10 @@ Integer& Integer::operator+(const Integer& integer_b)
 	/*	std::cout << "\n\n\t\t\t" << *this << "+\n";
 		std::cout << "\n\n\t\t\t" << integer_b << "\n-------------------------------------\n";*/
 
-		while (list_integer_a != nullptr && list_integer_b != nullptr) {
+		while (list_integer_a != nullptr && list_integer_b != nullptr || carry) {
 			
+
+
 			/*
 			Arrays
 			*/
@@ -271,7 +273,7 @@ Integer& Integer::operator+(const Integer& integer_b)
 			array_b_max = auxiliar_array_b->getCapacity();
 			array_b_quantity = auxiliar_array_b->getQuantity();
 			int b = auxiliar_array_b->getCapacity() - 1;
-			for (int a = auxiliar_array_a->getCapacity() - 1; (a >= array_a_max - array_a_quantity) || carry; a--) { //Si hay acarreo no puede detenerse la suma
+			for (int a = auxiliar_array_a->getCapacity() - 1; (a >= array_a_max - array_a_quantity)/* || carry*/; a--) { //Si hay acarreo no puede detenerse la suma
 				std::string auxiliar_addition;
 				if ((*auxiliar_array_b)[b]) {
 					auxiliar_addition = (std::to_string(*(*auxiliar_array_a)[a] + *(*auxiliar_array_b)[b] + carry));
@@ -295,7 +297,7 @@ Integer& Integer::operator+(const Integer& integer_b)
 					//}
 				}
 				else {
-					if (carry) {
+					if (carry && (!list_integer_a->get_previous())) {
 
 						auxiliar_addition = ((*auxiliar_array_a)[a] ? (std::to_string(*(*auxiliar_array_a)[a] + carry)) : std::to_string(carry));
 						carry = 0;
@@ -305,8 +307,25 @@ Integer& Integer::operator+(const Integer& integer_b)
 						}
 						integer_addition->add_digits(stoi(auxiliar_addition));
 					}
-					else {
+					else if ((*auxiliar_array_a)[a]) {
 						integer_addition->add_digits(*(*auxiliar_array_a)[a]);
+					}
+					else if ((*auxiliar_array_a)[a] && carry){
+						long long f = carry + *(*auxiliar_array_a)[a];
+						carry = 0;
+						if (digits_primitive(f) > MAX_DIGITS) { //Carry
+							int pw = pow(10, (digits_primitive(f) - 1));
+							carry = f / pw;
+							long long aa = 1;
+							long long aux_cast = f;
+							f = 0;
+							while (aa < pw) {
+								f += (aux_cast % 10) * aa;
+								aux_cast /= 10;
+								aa *= 10;
+							}
+						}
+						integer_addition->add_digits(f);
 					}
 					//return *integer_addition;
 				}
@@ -708,6 +727,8 @@ Integer& Integer::operator*(const Integer& integer_b)
 		Integer* integer_multiplication = new Integer();
 		int carry = 0;
 
+		//std::cout << "\n" << *this;
+		//std::cout << "\n"<<integer_b;
 
 		NodoDoble<Array>* list_integer_a_aux = nullptr;
 		Integer addition_aux;
@@ -736,19 +757,23 @@ Integer& Integer::operator*(const Integer& integer_b)
 						std::string shift_len(shift, '0');
 
 						list_integer_a_aux = list_integer_a;
-						while (list_integer_a_aux) { // integer_a
-							auxiliar_array_a = list_integer_a_aux->get_data();
-							for (int a = auxiliar_array_a->getCapacity() - 1; a >= auxiliar_array_a->f_index() || carry; a--) { // A array
-								long long cast_mult = 0;
+						while (list_integer_a_aux || carry) { // integer_a
+							if (!list_integer_a_aux && carry) {
+								addition_aux.add_digits(carry);
+								carry = 0;
+							}
+							else {
 
-								if (!(*auxiliar_array_a)[a] && carry) {
-									addition_aux = parse(addition_aux.toString() + std::string(shift, '0'));
-									addition_aux.add_digits(carry);
-									*integer_multiplication += addition_aux;
 
-									carry = 0;
-								}
-								else {
+								auxiliar_array_a = list_integer_a_aux->get_data();
+								for (int a = auxiliar_array_a->getCapacity() - 1; a >= auxiliar_array_a->f_index(); a--) { // A array
+									long long cast_mult = 0;
+									//if (!(*auxiliar_array_a)[a] && carry) {
+									//	addition_aux.add_digits(carry);
+									//	std::cout << addition_aux;
+									//	carry = 0;
+									//}
+									//else {
 									cast_mult = (long long)b_digit * (long long) * (*auxiliar_array_a)[a] + carry;
 									carry = 0;
 
@@ -764,17 +789,18 @@ Integer& Integer::operator*(const Integer& integer_b)
 											aa *= 10;
 										}
 									}
-								}
-								
+									//}
 
-								addition_aux.add_digits(cast_mult);
+
+									addition_aux.add_digits(cast_mult);
+								}
+								list_integer_a_aux = list_integer_a_aux->get_previous();
 							}
-							list_integer_a_aux = list_integer_a_aux->get_previous();
 						}
 						//Add the shifts
 						addition_aux = parse(addition_aux.toString() + std::string(shift, '0'));
 						//--
-						//std::cout << "\nNumero: " << addition_aux;
+						std::cout << "\nNumero: " << addition_aux;
 						if (!integer_multiplication->integer) {
 							*integer_multiplication = addition_aux;
 						}
