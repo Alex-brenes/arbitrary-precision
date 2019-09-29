@@ -9,13 +9,14 @@
 #include "doublelinkedlist.h"
 #include "array.h"
 #define MAX_DIGITS 9
+#define MAX_NUM_PER_CELL 999999999
 //#define ZERO 0
 //#define ONE 1
 
 class Integer {
 
 private:
-
+	static const Integer ERROR_VALUE;
 	NodoDoble<Array>** integer;
 	void add_digits(int);
 	int digits() const;
@@ -55,7 +56,6 @@ public:
 	bool operator<=(const Integer&);
 	bool operator>=(const Integer&);
 	bool operator==(const Integer&);
-
 	bool operator!=(const Integer&);
 	std::string toString();
 	~Integer();

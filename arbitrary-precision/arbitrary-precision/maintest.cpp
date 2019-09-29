@@ -4,18 +4,18 @@
 Integer& fibonacci(Integer);
 Integer& factorial(Integer);
 int main() {
-	Integer entero_a(Integer::parse("50"));
-	Integer entero_c(Integer::parse("608281864034267560872252163321295376887552831379210240000000000"));
+	Integer entero_a(Integer::parse("20"));
+	Integer entero_c(Integer::parse("1"));
 	Integer entero_d(entero_a);
 
-	//std::cout << "\n\n\n" << entero_a * entero_c;
+	std::cout << "\n" << entero_a / entero_c;
 	//std::cout << "\n\n\n" << factorial(500);
-	auto start = std::chrono::system_clock::now();
-	std::cout <<"\n\n\n"<< fibonacci(10000);
-	auto end = std::chrono::system_clock::now();
-	std::chrono::duration<float, std::milli> duration = end - start;
+	//auto start = std::chrono::system_clock::now();
+	//std::cout <<"\n\n\n"<< fibonacci(10000);
+	//auto end = std::chrono::system_clock::now();
+	//std::chrono::duration<float, std::milli> duration = end - start;
 
-	std::cout << "\nDuration: " << duration.count() * std::chrono::milliseconds::period::num / std::chrono::milliseconds::period::den << std::endl;
+	//std::cout << "\nDuration: " << duration.count() * std::chrono::milliseconds::period::num / std::chrono::milliseconds::period::den << std::endl;
 		return 0;
 }
 
