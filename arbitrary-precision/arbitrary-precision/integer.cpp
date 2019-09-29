@@ -962,7 +962,7 @@ Integer& Integer::operator*(const Integer& integer_b)
 						//Add the shifts
 						addition_aux = parse(addition_aux.toString() + std::string(shift, '0'));
 						//--
-						std::cout << "\nNumero: " << addition_aux;
+						//std::cout << "\nNumero: " << addition_aux;
 						if (!integer_multiplication->integer) {
 							*integer_multiplication = addition_aux;
 						}
@@ -970,7 +970,7 @@ Integer& Integer::operator*(const Integer& integer_b)
 							*integer_multiplication += addition_aux;
 						}
 						addition_aux.clear_integer();
-						std::cout << "\nSumatoria: " << *integer_multiplication;
+						//std::cout << "\nSumatoria: " << *integer_multiplication;
 
 						shift++;
 					}
@@ -1793,47 +1793,47 @@ Integer::~Integer() {
 
 std::ostream& operator<<(std::ostream& output, const Integer& integer) {
 	try {
-		//if (integer.getInteger() == nullptr) {
-		//	throw 0;
-		//}
-		//NodoDoble<Array>* aux = *integer.getInteger();
-		//while (aux != nullptr) {
-		//	if (aux->get_previous() == nullptr) {
-		//		Array* auxiliar_array = aux->get_data();
-		//		int first = auxiliar_array->getCapacity() - auxiliar_array->getQuantity();
-		//		std::string number = std::to_string(*(*auxiliar_array)[auxiliar_array->getCapacity() - auxiliar_array->getQuantity()]);
-		//		//Signed number
-		//		if (number[0] == '0' && (aux->get_next() || (*auxiliar_array)[auxiliar_array->getCapacity() - auxiliar_array->getQuantity() + 1])) {
-		//			std::stringstream s;
-		//			int digits = aux->get_data()->countDigits(aux->get_data()->getCapacity() - aux->get_data()->getQuantity());
-		//			s << *(aux->get_data());
-		//			std::string str(s.str());
-		//			str = str.substr(MAX_DIGITS - 1, str.length());
-		//			str[0] = '-';
-		//			output << str;
-		//		}
-		//		else {
-		//			std::stringstream s;
-		//			int digits = aux->get_data()->countDigits(aux->get_data()->getCapacity() - aux->get_data()->getQuantity());
-		//			s << *(aux->get_data());
-		//			std::string str(s.str());
-		//			str = str.substr(MAX_DIGITS - digits, str.length());
-		//			output << str;
-		//			//output << *(aux->get_data());
-		//		}
-		//	}
-		//	else {
-		//		output << *(aux->get_data());
-		//	}
-		//	aux = aux->get_next();
-		//}
-		//return output;
-		NodoDoble<Array>* aux = *integer.integer;
-		while (aux) {
-			output << *aux->get_data();
+		if (integer.getInteger() == nullptr) {
+			throw 0;
+		}
+		NodoDoble<Array>* aux = *integer.getInteger();
+		while (aux != nullptr) {
+			if (aux->get_previous() == nullptr) {
+				Array* auxiliar_array = aux->get_data();
+				int first = auxiliar_array->getCapacity() - auxiliar_array->getQuantity();
+				std::string number = std::to_string(*(*auxiliar_array)[auxiliar_array->getCapacity() - auxiliar_array->getQuantity()]);
+				//Signed number
+				if (number[0] == '0' && (aux->get_next() || (*auxiliar_array)[auxiliar_array->getCapacity() - auxiliar_array->getQuantity() + 1])) {
+					std::stringstream s;
+					int digits = aux->get_data()->countDigits(aux->get_data()->getCapacity() - aux->get_data()->getQuantity());
+					s << *(aux->get_data());
+					std::string str(s.str());
+					str = str.substr(MAX_DIGITS - 1, str.length());
+					str[0] = '-';
+					output << str;
+				}
+				else {
+					std::stringstream s;
+					int digits = aux->get_data()->countDigits(aux->get_data()->getCapacity() - aux->get_data()->getQuantity());
+					s << *(aux->get_data());
+					std::string str(s.str());
+					str = str.substr(MAX_DIGITS - digits, str.length());
+					output << str;
+					//output << *(aux->get_data());
+				}
+			}
+			else {
+				output << *(aux->get_data());
+			}
 			aux = aux->get_next();
 		}
 		return output;
+		//NodoDoble<Array>* aux = *integer.integer;
+		//while (aux) {
+		//	output << *aux->get_data();
+		//	aux = aux->get_next();
+		//}
+		//return output;
 	}
 	catch (int) {
 		// Integer is empty

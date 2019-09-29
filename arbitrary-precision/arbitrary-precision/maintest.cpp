@@ -4,13 +4,14 @@
 Integer& fibonacci(Integer);
 Integer& factorial(Integer);
 int main() {
-	Integer entero_a(Integer::parse("123123123123123123123123132123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123"));
-	Integer entero_c(Integer::parse("12312312312312312312312312312312312312312312312312312312312312312312312312312312312312312312312312312312312312312312312312312312312312312312312312312312312312312312312312312312312312312312312123123123"));
+	Integer entero_a(Integer::parse("50"));
+	Integer entero_c(Integer::parse("608281864034267560872252163321295376887552831379210240000000000"));
 	Integer entero_d(entero_a);
 
-	//std::cout << "\n" << entero_a + entero_c;
+	//std::cout << "\n\n\n" << entero_a * entero_c;
+	//std::cout << "\n\n\n" << factorial(500);
 	auto start = std::chrono::system_clock::now();
-	std::cout << fibonacci(10000);
+	std::cout <<"\n\n\n"<< fibonacci(10000);
 	auto end = std::chrono::system_clock::now();
 	std::chrono::duration<float, std::milli> duration = end - start;
 
@@ -22,10 +23,10 @@ Integer& factorial(Integer integer) {
 	Integer *fact= new Integer(1);
 	Integer i(1);
 	while (i <= integer) {
-		std::cout << "\n--------" << i<<"\n";
-		if (i==Integer(93)) {
-			std::cout << "";
-		}
+		//std::cout << "\n--------" << i<<"\n";
+		//if (i==Integer(93)) {
+		//	std::cout << "";
+		//}
 		*fact *= i;
 		i++;
 	}
