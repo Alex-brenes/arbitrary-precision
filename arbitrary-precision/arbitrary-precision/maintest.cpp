@@ -1,21 +1,20 @@
 #include <iostream>
+#include <chrono>
 #include "integer.h"
 Integer& fibonacci(Integer);
 Integer& factorial(Integer);
 int main() {
-	Integer entero_a(Integer::parse("111111111222222222333333333444444444555555555666666666777777777888888888999999999111111111222222222333333333444444444555555555666666666777777777888888888999999999111111111222222222333333333444444444555555555666666666777777777888888888999999999111111111222222222333333333444444444555555555666666666777777777888888888999999999111111111222222222333333333444444444555555555666666666777777777888888888999999999111111111222222222333333333444444444555555555666666666777777777888888888999999999111111111222222222333333333444444444555555555666666666777777777888888888999999999111111111222222222333333333444444444555555555666666666777777777888888888999999999111111111222222222333333333444444444555555555666666666777777777888888888999999999"));
-	Integer entero_b;
-	Integer entero_c;
+	Integer entero_a(Integer::parse("123123123123123123123123132123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123"));
+	Integer entero_c(Integer::parse("12312312312312312312312312312312312312312312312312312312312312312312312312312312312312312312312312312312312312312312312312312312312312312312312312312312312312312312312312312312312312312312312123123123"));
 	Integer entero_d(entero_a);
-	//Integer entero_e = Integer::parse("1307674368000");
-	//Integer entero_f = Integer::parse("16");
-	//Integer entero_x = Integer::parse("56");
-	//Integer entero_y = Integer::parse("12696403353658275925965100847566516959580321051449436762275840000000000000");
-	//std::cout <<"\n"<< entero_x * entero_y;
-	//std::cout << entero_a;
-	Integer aux(93);
-	std::cout << "\nFactorial: " << factorial(aux);
-	//std::cout << (entero_x < entero_y ? "true" : "false");
+
+	//std::cout << "\n" << entero_a + entero_c;
+	auto start = std::chrono::system_clock::now();
+	std::cout << fibonacci(10000);
+	auto end = std::chrono::system_clock::now();
+	std::chrono::duration<float, std::milli> duration = end - start;
+
+	std::cout << "\nDuration: " << duration.count() * std::chrono::milliseconds::period::num / std::chrono::milliseconds::period::den << std::endl;
 		return 0;
 }
 
@@ -34,13 +33,16 @@ Integer& factorial(Integer integer) {
 }
 
 Integer& fibonacci(Integer a) {
-	Integer x = Integer::ZERO, y = Integer::ONE, z = Integer::ZERO;
-	std::stringstream s;
+	Integer x = Integer::ZERO;
+	Integer y = Integer::ONE;
+	Integer z = Integer::ZERO;
 	for (Integer i = Integer::ZERO; i < a; i++) {
-		s<< x;
+		//std::cout << i<<"\n";
 		z = x + y;
 		x = y;
 		y = z;
+		//std::cout << i;
 	}
-	return Integer::parse(s.str());
+	Integer* r = new Integer(x);
+	return *r;
 }
