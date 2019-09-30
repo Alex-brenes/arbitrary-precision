@@ -1,3 +1,7 @@
+//integer.h
+//Autor: José Alexander Brenes Brenes;Juan Daniel Quirós
+//Implementación de la clase para el uso de enteros de precisión arbitraria o bignum
+//se incluyen métodos ariméticos y lógicos para el manejo de los enteros
 #include "integer.h"
 
 const Integer Integer::ONE = Integer(1);
@@ -671,7 +675,68 @@ Integer& Integer::operator/(const Integer& integer_b)
 			throw std::domain_error("Math error: Division by zero is undefined.");
 		}
 
+		if (*this < integer_b) {
+			return *(new Integer(ZERO));
+		}
 
+		Array* auxiliar_array_a = nullptr;
+		Array* auxiliar_array_b = nullptr;
+		NodoDoble<Array>* list_integer_a = *(this)->integer;
+		NodoDoble<Array>* list_integer_b = *(integer_b).integer;
+
+		std::string integer_a_str = this->toString();
+		int cursor = 0;
+		long long divison_cast = (long long)integer_a_str[cursor] - '0';
+
+		std::string division_integer, remain_auxiliar;
+
+		std::string divisor_aux = integer_b.toString();
+		std::string dividend_aux = this->toString();
+
+		int division_auxiliar_index = 0;
+		int  dividend_length = dividend_aux.length();
+		int divisor_length = divisor_aux.length();
+			int division_integer_length = dividend_length - divisor_length + 1;
+
+			division_integer.resize(division_integer_length, '0');
+			remain_auxiliar = dividend_aux.substr(0, divisor_length);
+			for (division_auxiliar_index = 0; division_auxiliar_index < division_integer_length; ) {
+				int digit = 0;
+
+				while (remain_auxiliar.size() > divisor_aux.size() || (remain_auxiliar.size() == divisor_aux.size() && remain_auxiliar >= divisor_aux)) {
+					digit++;
+					remain_auxiliar = (parse(remain_auxiliar) - parse(divisor_aux)).toString();
+				}
+
+				division_integer[division_auxiliar_index] = '0' + digit;
+
+				if (remain_auxiliar == "0") {
+					remain_auxiliar.clear();
+					while (division_auxiliar_index < division_integer_length && dividend_aux[divisor_length + division_auxiliar_index] == '0')
+						division_integer[++division_auxiliar_index] = '0';
+				}
+
+				remain_auxiliar.reserve(divisor_length + 1);
+
+				while ((remain_auxiliar.size() < divisor_aux.size() || (remain_auxiliar.size() == divisor_aux.size() && remain_auxiliar < divisor_aux)) && division_auxiliar_index < division_integer_length) {
+					remain_auxiliar.resize(remain_auxiliar.size() + 1);
+					remain_auxiliar[remain_auxiliar.size() - 1] = dividend_aux[divisor_length + division_auxiliar_index];
+					division_integer[++division_auxiliar_index] = '0';
+				}
+
+			}
+			division_auxiliar_index = 0, division_integer_length = division_integer.size() - 1;
+			while (division_auxiliar_index < division_integer_length && division_integer[division_auxiliar_index] == '0') {
+				++division_auxiliar_index;
+			}
+			if (division_auxiliar_index) {
+				division_integer.erase(0, division_auxiliar_index);
+			}
+			
+			return *new Integer(parse(division_integer));
+
+
+		Integer* integer_division = nullptr;
 
 	}
 	catch (std::domain_error x) {
@@ -956,7 +1021,7 @@ bool Integer::operator!=(const Integer& integer_b)
 	}
 }
 
-std::string Integer::toString()
+std::string Integer::toString() const
 {
 	std::stringstream s;
 	s << *this;

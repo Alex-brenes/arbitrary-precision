@@ -1,6 +1,7 @@
 //integer.h
-//Autor: José Alexander Brenes Brenes
+//Autor: José Alexander Brenes Brenes;Juan Daniel Quirós
 //Clase para enteros de precisión arbitraria o bignum
+//se incluyen métodos ariméticos y lógicos para el manejo de los enteros
 #ifndef INTEGER_H
 #define INTEGER_H
 #include <string>
@@ -57,7 +58,7 @@ public:
 	bool operator>=(const Integer&);
 	bool operator==(const Integer&);
 	bool operator!=(const Integer&);
-	std::string toString();
+	std::string toString() const;
 	~Integer();
 	friend std::ostream& operator<<(std::ostream&, const Integer&);
 

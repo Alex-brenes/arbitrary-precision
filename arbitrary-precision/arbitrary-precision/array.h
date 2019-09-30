@@ -1,3 +1,6 @@
+//array.cpp
+//Autor: José Alexander Brenes Brenes; Juan Daniel Quirós
+//Clase que contiene un arreglo de tamaño 8 capaz de almacenar hasta 72 dígitos
 #ifndef ARRAY_H
 #define ARRAY_H
 #define MAX_TAM 8

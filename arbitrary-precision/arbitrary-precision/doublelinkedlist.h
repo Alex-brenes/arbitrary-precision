@@ -1,3 +1,6 @@
+//listasimple.h
+//Autor: José Alexander Brenes Brenes; Juan Daniel Quirós
+//Permite el uso de nodos para la representación de una lista doblemente enlazada, así como sus métodos básicos
 #ifndef LISTADOBLE_H
 #define LISTADOBLE_H
 

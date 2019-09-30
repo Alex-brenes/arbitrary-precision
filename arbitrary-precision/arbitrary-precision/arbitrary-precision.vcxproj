@@ -126,7 +126,6 @@
     <ClInclude Include="array.h" />
     <ClInclude Include="doublelinkedlist.h" />
     <ClInclude Include="integer.h" />
-    <ClInclude Include="listasimple.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="array.cpp" />

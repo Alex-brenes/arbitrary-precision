@@ -1,3 +1,6 @@
+//array.cpp
+//Autor: José Alexander Brenes Brenes; Juan Daniel Quirós
+//implementación de la clase Array
 #include "array.h"
 
 Array::Array()
@@ -18,11 +21,6 @@ Array::Array(const Array& _arr)
 	for (int i = 0; i < capacity; i++) {
 		this->_arr[i] = nullptr;
 	}
-	//for (int i = _arr.capacity - 1; i > _arr.size; i--) {
-	//	if (_arr[i]) {
-	//		this->_arr[i] = new int(*_arr[i]);
-	//	}
-	//}
 
 	for (int i = _arr.capacity - _arr.getQuantity(); i < _arr.capacity; i++) {
 		this->_arr[i] = new int(*_arr[i]);
@@ -60,9 +58,6 @@ bool Array::add(int* val)
 {
 	//End
 	if (size >= 0) {
-		if (size + 1 < MAX_TAM) {
-			//std::cout << "\n" << *_arr[size + 1];
-		}
 		if (this->getQuantity() == 0) {
 			_arr[size--] = val;
 		}
@@ -107,7 +102,6 @@ bool Array::add_one_by_one(int& val)
 bool Array::add_shifted(int* val)
 {
 	if (std::to_string(*_arr[size + 1]).length() < MAX_DIGITS) {
-		//std::cout << "\n" << *_arr[size + 1];
 		_arr[size + 1] = new int(atoi((std::to_string(*val) + std::to_string(*_arr[size + 1])).c_str()));
 		return true;
 	}
@@ -170,12 +164,6 @@ void Array::reduceSize()
 
 std::ostream& operator<<(std::ostream& output, const Array& arr)
 {
-	//for (int i = 0; i < arr.getCapacity(); i++) {
-	//	if (arr[i] != nullptr) {
-	//		output << *arr[i];
-	//	}
-	//}
-	//return output;
 	for (int i = arr.getCapacity() - arr.getQuantity(); i < arr.getCapacity(); i++) {
 		if (arr[i] != nullptr) {
 			if (arr.countDigits(i) < MAX_DIGITS) {
